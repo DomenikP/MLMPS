@@ -211,7 +211,7 @@ public final class TextFacility {
     DebugInfoBuilder debugInfoBuilder = new DebugInfoBuilder();
     for (TextGenerationResult result : getTextGenOutcome()) {
       if (TextGen.NO_TEXTGEN != result.getResult()) {
-        debugInfoBuilder.fillDebugInfo(TextGen.getFileName(result.getRoot()), result.getPositions(), result.getScopePositions(), result.getUnitPositions(), originalInput);
+        debugInfoBuilder.fillDebugInfoWithTransientModels(TextGen.getFileName(result.getRoot()), result.getPositions(), result.getScopePositions(), result.getUnitPositions(), originalInput);
       }
     }
     return debugInfoBuilder.getDebugInfo();

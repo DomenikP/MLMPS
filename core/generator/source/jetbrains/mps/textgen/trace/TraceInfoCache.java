@@ -62,7 +62,7 @@ public class TraceInfoCache extends BaseModelCache<DebugInfo> {
     }
     INSTANCE = this;
     super.init();
-    // todo: move (but remember that java provider is used in idea plugin as well) 
+    // todo: move (but remember that java provider is used in idea plugin as well)
     myProviders.add(myJavaTraceInfoProvider);
   }
 
@@ -158,7 +158,7 @@ public class TraceInfoCache extends BaseModelCache<DebugInfo> {
     if (file.isEmpty()) {
       return null;
     }
-    //  if this is a jar, it starts with file:, so we remove the prefix 
+    //  if this is a jar, it starts with file:, so we remove the prefix
     String prefix = "file:";
     if (file.startsWith(prefix)) {
       file = file.substring(prefix.length());

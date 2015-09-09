@@ -274,7 +274,7 @@ public class TraceInfoUtil {
       }
     }).select(new ISelector<String, SModel>() {
       public SModel select(String stereotype) {
-        return SModelRepository.getInstance().getModelDescriptor(SModelStereotype.withStereotype(modelFqName, stereotype));
+        return SModelRepository.getInstance().getModelDescriptor(modelFqName);
       }
     }).where(new IWhereFilter<SModel>() {
       public boolean accept(SModel it) {

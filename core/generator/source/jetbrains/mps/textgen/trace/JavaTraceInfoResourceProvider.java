@@ -16,6 +16,8 @@
 package jetbrains.mps.textgen.trace;
 
 import java.net.URL;
+
+import jetbrains.mps.generator.TransientModelsModule;
 import org.jetbrains.mps.openapi.module.SModule;
 import jetbrains.mps.project.structure.modules.ModuleDescriptor;
 import jetbrains.mps.project.AbstractModule;
@@ -31,6 +33,10 @@ class JavaTraceInfoResourceProvider implements TraceInfoCache.TraceInfoResourceP
   @Override
   public URL getResource(SModule module, String resourceName) {
     ModuleDescriptor descriptor = ((AbstractModule) module).getModuleDescriptor();
+    if(module instanceof TransientModelsModule) {
+      SModule originalModule = ((TransientModelsModule) module).getOriginalModule();
+      return JavaModuleOperations.createClassPathItem(originalModule.getFacet(JavaModuleFacet.class).getClassPath(), JavaTraceInfoResourceProvider.class.getName()).getResource(resourceName);
+    }
     if (SModuleOperations.isCompileInMps(module) || (descriptor != null && !(descriptor.getAdditionalJavaStubPaths().isEmpty()))) {
       return JavaModuleOperations.createClassPathItem(module.getFacet(JavaModuleFacet.class).getClassPath(), JavaTraceInfoResourceProvider.class.getName()).getResource(resourceName);
     }

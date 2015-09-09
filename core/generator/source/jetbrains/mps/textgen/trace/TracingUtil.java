@@ -79,13 +79,14 @@ public class TracingUtil {
   }
 
   public static void fillOriginalNode(@NotNull SNode inputNode, @NotNull SNode outputNode, boolean originalInput) {
-    if (originalInput) {
+    putInputNode(outputNode, inputNode);
+    /*if (originalInput) {
       putInputNode(outputNode, inputNode);
     } else {
       SNodeReference originalInputNode = getInput(inputNode);
       if (originalInputNode != null) {
         putInput(outputNode, originalInputNode);
       }
-    }
+    }*/
   }
 }
