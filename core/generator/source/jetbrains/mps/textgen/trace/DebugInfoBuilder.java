@@ -225,6 +225,7 @@ public class DebugInfoBuilder {
         for(SNode rootNode: rootNodes) {
           List<SNode> descendants = SNodeOperations.getNodeDescendants(rootNode, null, false);
           for(SNode node: descendants) {
+            boolean repo = currentModel.getModelName().contains("5_1") && node.getConcept().getName().contains("ReportStatement");
             TraceablePositionInfo traceablePosition = getTraceablePosition(transientPositionInfos, node);
             if(traceablePosition != null) {
               TraceablePositionInfo newTracePos= new TraceablePositionInfo();
