@@ -12,6 +12,7 @@
     <orderEntry type="module" module-name="debuginfo-api" />
     <orderEntry type="module" module-name="kernel" />
     <orderEntry type="library" name="Annotations" level="project" />
+    <orderEntry type="module" module-name="generator-engine" />
   </component>
 </module>
 

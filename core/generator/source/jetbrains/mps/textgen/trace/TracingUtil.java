@@ -45,6 +45,7 @@ public class TracingUtil {
   public static List<SNode> copyWithTrace(List<SNode> nodes) {
     HashMap<SNode, SNode> nodeMap = new HashMap<SNode, SNode>();
     List<SNode> result = CopyUtil.copy(nodes, nodeMap);
+
     for (Entry<SNode, SNode> entry : nodeMap.entrySet()) {
       SNodeReference input = getInput(entry.getKey());
       if (input != null) {

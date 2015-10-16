@@ -21,6 +21,7 @@ import jetbrains.mps.generator.GenerationTracerUtil;
 import jetbrains.mps.generator.IGenerationTracer;
 import jetbrains.mps.generator.IGeneratorLogger;
 import jetbrains.mps.generator.NullGenerationTracer;
+import jetbrains.mps.generator.TransientSModel;
 import jetbrains.mps.generator.impl.RoleValidation.RoleValidator;
 import jetbrains.mps.generator.impl.RoleValidation.Status;
 import jetbrains.mps.generator.impl.query.GeneratorQueryProvider;
@@ -42,6 +43,11 @@ import jetbrains.mps.generator.runtime.TemplateSwitchMapping;
 import jetbrains.mps.generator.template.ITemplateProcessor;
 import jetbrains.mps.generator.template.QueryExecutionContext;
 import jetbrains.mps.smodel.IOperationContext;
+import jetbrains.mps.smodel.MPSModuleRepository;
+import jetbrains.mps.smodel.tracing.TracedNode;
+import jetbrains.mps.smodel.tracing.TransformationTrace;
+import jetbrains.mps.smodel.tracing.nodes.SNodeProxy;
+import jetbrains.mps.textgen.trace.TracingSettings;
 import jetbrains.mps.textgen.trace.TracingUtil;
 import jetbrains.mps.util.containers.ConcurrentHashSet;
 import org.jetbrains.annotations.NotNull;
@@ -53,6 +59,7 @@ import org.jetbrains.mps.openapi.model.SNode;
 import org.jetbrains.mps.openapi.model.SNodeId;
 import org.jetbrains.mps.openapi.model.SNodeReference;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -288,6 +295,27 @@ public class TemplateExecutionEnvironmentImpl implements TemplateExecutionEnviro
         }
         contextParentNode.addChild(childRole, outputNodeToWeave);
       }
+
+    }
+
+    SNode resolvedRuleNode = templateNode.resolve(MPSModuleRepository.getInstance());
+    if(TracingSettings.getInstance().isWriteTracingFile()) {
+      outputNodeToWeave.putUserObject("inputNode", inputNode);
+    }
+
+    if(TracingSettings.getInstance().isWriteGeneratorFile()) {
+      TransformationTrace.getInstance().trackReducedByTrafo(inputNode.getReference(), resolvedRuleNode.getReference());
+      TransformationTrace.getInstance().trackOutputNode(inputNode.getReference(), outputNodeToWeave.getNodeId(), contextParentNode.getModel());
+      TransformationTrace.getInstance().trackCreatedByTrafo(outputNodeToWeave.getReference(), resolvedRuleNode.getReference());
+
+      TracedNode tracedInput = TransformationTrace.getInstance().addTrackedNode(new SNodeProxy(inputNode.getNodeId(), generator.getInputModel().getReference()));
+      tracedInput.addReducedBy(new SNodeProxy(resolvedRuleNode.getNodeId(), resolvedRuleNode.getModel().getReference()));
+      tracedInput.addOutputNode(new SNodeProxy(outputNodeToWeave.getNodeId(), contextParentNode.getModel().getReference()));
+
+      TracedNode tracedOutput =
+          TransformationTrace.getInstance().addTrackedNode(new SNodeProxy(outputNodeToWeave.getNodeId(), contextParentNode.getModel().getReference()));
+      tracedOutput.setCreatedBy(new SNodeProxy(resolvedRuleNode.getNodeId(), resolvedRuleNode.getModel().getReference()));
+      tracedOutput.setInputNode(new SNodeProxy(inputNode.getNodeId(), generator.getInputModel().getReference()));
     }
   }
 
@@ -345,10 +373,33 @@ public class TemplateExecutionEnvironmentImpl implements TemplateExecutionEnviro
           }
           try {
             myReductionTrack.enter(inputNode, rule);
-            Collection<SNode> outputNodes = getQueryExecutor().tryToApply(rule, context);
+
+            // -> here we must remember the rule + inputNode + outputNodes
+            //inputNode.putUserObject("reducedBy",rule);
+            Collection<SNode> outputNodes = null;
+            try {
+              outputNodes = getQueryExecutor().tryToApply(rule, context);
+            } catch (AbandonRuleInputException exc) {
+              // Exception is thrown, if reduction rule abandons input
+                SNodeReference ruleNode = rule.getRuleNode();
+
+              if(TracingSettings.getInstance().isWriteGeneratorFile()) {
+                TransformationTrace.getInstance().trackReducedByTrafo(inputNode.getReference(), ruleNode);
+                TransformationTrace.getInstance().trackOutputNodes(inputNode.getReference(), new ArrayList<SNodeId>(), this.generator.myOutputModel);
+
+                TracedNode tracedInput = TransformationTrace.getInstance().addTrackedNode(new SNodeProxy(inputNode.getNodeId(), generator.getInputModel().getReference()));
+                tracedInput.addReducedBy(new SNodeProxy(ruleNode.getNodeId(), ruleNode.getModelReference() ));
+              }
+                throw exc;
+            }
             if (outputNodes != null) {
               SNodeId in = context.getInput() == null ? null : context.getInput().getNodeId();
               getTrace().trace(in, GenerationTracerUtil.translateOutput(outputNodes), rule.getRuleNode());
+              if(TracingSettings.getInstance().isWriteTracingFile()) {
+                for (SNode outputNode : outputNodes) {
+                  outputNode.putUserObject("inputNode", inputNode);
+                }
+              }
               return outputNodes;
             }
           } catch (DismissTopMappingRuleException ex) {

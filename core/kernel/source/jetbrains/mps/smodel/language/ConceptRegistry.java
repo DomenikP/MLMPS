@@ -268,6 +268,20 @@ public class ConceptRegistry implements CoreComponent, LanguageRegistryListener 
     }
   }
 
+
+  @NotNull
+  public TextGenAspectDescriptor getTextGenAspectDescriptor(@Nullable SNode node) {
+      LanguageRuntime languageRuntime = myLanguageRegistry.getLanguage(node.getConcept().getLanguage().getQualifiedName());
+      TextGenAspectDescriptor textGenAspectDescriptor;
+      if (languageRuntime == null) {
+        textGenAspectDescriptor = new TextGenAspectInterpreted();
+      } else {
+        textGenAspectDescriptor = languageRuntime.getAspect(TextGenAspectDescriptor.class);
+      }
+      return textGenAspectDescriptor;
+  }
+
+
   @NotNull
   public TextGenDescriptor getTextGenDescriptor(@Nullable SNode node) {
     if (node == null) {

@@ -15,21 +15,35 @@
  */
 package jetbrains.mps.textGen;
 
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
 import jetbrains.mps.messages.IMessage;
 import jetbrains.mps.messages.Message;
 import jetbrains.mps.messages.MessageKind;
+import jetbrains.mps.smodel.Language;
+import jetbrains.mps.smodel.LanguageAspect;
+import jetbrains.mps.smodel.ModuleRepositoryFacade;
+import jetbrains.mps.smodel.SNodeUtil;
+import jetbrains.mps.smodel.runtime.impl.SNodeTextGenAdapter;
+import jetbrains.mps.smodel.structure.DescriptorUtils;
+import jetbrains.mps.smodel.tracing.TracedNode;
+import jetbrains.mps.smodel.tracing.TransformationTrace;
+import jetbrains.mps.smodel.adapter.structure.ref.SReferenceLinkAdapterByName;
 import jetbrains.mps.smodel.language.ConceptRegistry;
 import jetbrains.mps.smodel.runtime.TextGenDescriptor;
 import jetbrains.mps.smodel.runtime.impl.DefaultTextGenDescriptor;
+import jetbrains.mps.smodel.tracing.nodes.SNodeProxy;
 import jetbrains.mps.textgen.trace.PositionInfo;
 import jetbrains.mps.textgen.trace.ScopePositionInfo;
 import jetbrains.mps.textgen.trace.TraceablePositionInfo;
+import jetbrains.mps.textgen.trace.TracingSettings;
 import jetbrains.mps.textgen.trace.UnitPositionInfo;
 import jetbrains.mps.util.EncodingUtil;
 import jetbrains.mps.util.NameUtil;
 import jetbrains.mps.util.SNodeOperations;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.mps.openapi.language.SConcept;
+import org.jetbrains.mps.openapi.model.SModel;
 import org.jetbrains.mps.openapi.model.SNode;
 
 import java.io.IOException;
@@ -128,12 +142,48 @@ public class TextGen {
     return new TextGenerationResult(node, result, buffer.hasErrors(), buffer.problems(), positionInfo, scopeInfo, unitInfo, deps);
   }
 
+  public static SNode getTextGenNode(SNode node) {
+    SConcept baseConcept = SNodeUtil.concept_BaseConcept;
+    SConcept c = node.getConcept();
+
+    while(c != null && !c.equals(baseConcept)) {
+      String langName = c.getLanguage().getQualifiedName();
+      Language lang = ModuleRepositoryFacade.getInstance().getModule(langName, Language.class);
+      for (SModel model : lang.getModels()) {
+        if(model.getModelName().contains("textGen")) {
+          for(SNode root : model.getRootNodes()) {
+            if(root.getConcept().getName().endsWith("ConceptTextGenDeclaration")) {
+              SNode conceptDeclaration = SLinkOperations.getTarget(root,
+                  new SReferenceLinkAdapterByName("jetbrains.mps.lang.textGen.structure.ConceptTextGenDeclaration", "conceptDeclaration"));
+              if(c.getDeclarationNode() == conceptDeclaration) {
+                return root;
+              }
+            }
+          }
+        }
+      }
+      c = c.getSuperConcept();
+    }
+    return null;
+  }
+
+
   // compatibility stuff
   @Deprecated
   public static void appendNodeText(SNodeTextGen textGen, SNode node, TextGenBuffer buffer) {
     textGen.setBuffer(buffer);
     try {
       textGen.setSNode(node);
+
+      if(TracingSettings.getInstance().isWriteGeneratorFile()) {
+        SNode textGenNode = getTextGenNode(node);
+        if(textGenNode != null) {
+          TransformationTrace.getInstance().trackReducedByTrafo(node.getReference(), textGenNode.getReference());
+          TracedNode tracedNode = TransformationTrace.getInstance().addTrackedNode(new SNodeProxy(node.getNodeId(), node.getModel().getReference()));
+          tracedNode.addReducedBy(new SNodeProxy(textGenNode.getNodeId(), textGenNode.getModel().getReference()));
+        }
+      }
+
       textGen.doGenerateText(node);
       textGen.setSNode(null);
     } catch (Exception e) {

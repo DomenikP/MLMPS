@@ -30,6 +30,8 @@ import jetbrains.mps.smodel.adapter.structure.property.SPropertyAdapter;
 import jetbrains.mps.smodel.adapter.structure.ref.SReferenceLinkAdapter;
 import jetbrains.mps.smodel.references.UnregisteredNodes;
 import jetbrains.mps.smodel.search.SModelSearchUtil;
+import jetbrains.mps.smodel.tracing.TransformationTrace;
+import jetbrains.mps.textgen.trace.TracingSettings;
 import jetbrains.mps.util.AbstractSequentialList;
 import jetbrains.mps.util.Computable;
 import jetbrains.mps.util.EqualUtil;
@@ -509,7 +511,7 @@ public class SNode extends SNodeBase implements org.jetbrains.mps.openapi.model.
     return myModel == null ? null : myModel.getModelDescriptor();
   }
 
-  private SModelBase getRealModel() {
+  public SModelBase getRealModel() {
     SModel persistentModel = getPersistentModel();
     return persistentModel == null ? null : persistentModel.getModelDescriptor();
   }
@@ -530,7 +532,7 @@ public class SNode extends SNodeBase implements org.jetbrains.mps.openapi.model.
   //----------------------------------------------------------
 
   public void setId(@Nullable org.jetbrains.mps.openapi.model.SNodeId id) {
-    if (EqualUtil.equals(id, myId)) return;
+      if (EqualUtil.equals(id, myId)) return;
 
     if (myModel == null) {
       myId = ((SNodeId) id);
@@ -585,6 +587,9 @@ public class SNode extends SNodeBase implements org.jetbrains.mps.openapi.model.
 
     for (SNode child = firstChild(); child != null; child = child.treeNext()) {
       child.registerInModel(model);
+    }
+    if(TracingSettings.getInstance().isWriteGeneratorFile()) {
+      TransformationTrace.getInstance().resolveUnregistredNode(this.getNodeId(), myModel.getReference());
     }
   }
 

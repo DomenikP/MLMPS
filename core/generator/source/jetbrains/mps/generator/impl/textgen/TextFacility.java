@@ -26,10 +26,12 @@ import jetbrains.mps.make.java.RootDependencies;
 import jetbrains.mps.messages.IMessage;
 import jetbrains.mps.messages.Message;
 import jetbrains.mps.messages.MessageKind;
+import jetbrains.mps.smodel.tracing.TransformationTrace;
 import jetbrains.mps.textGen.TextGen;
 import jetbrains.mps.textGen.TextGenerationResult;
 import jetbrains.mps.textgen.trace.DebugInfo;
 import jetbrains.mps.textgen.trace.DebugInfoBuilder;
+import jetbrains.mps.textgen.trace.TracingSettings;
 import jetbrains.mps.util.IStatus;
 import jetbrains.mps.util.NameUtil;
 import jetbrains.mps.util.Status;
@@ -211,7 +213,11 @@ public final class TextFacility {
     DebugInfoBuilder debugInfoBuilder = new DebugInfoBuilder();
     for (TextGenerationResult result : getTextGenOutcome()) {
       if (TextGen.NO_TEXTGEN != result.getResult()) {
-        debugInfoBuilder.fillDebugInfoWithTransientModels(TextGen.getFileName(result.getRoot()), result.getPositions(), result.getScopePositions(), result.getUnitPositions(), originalInput);
+        if(TracingSettings.getInstance().isWriteTracingFile()) {
+          debugInfoBuilder.fillDebugInfoWithTransientModels(TextGen.getFileName(result.getRoot()), result.getPositions(), result.getScopePositions(), result.getUnitPositions(), originalInput);
+        } else {
+          debugInfoBuilder.fillDebugInfo(TextGen.getFileName(result.getRoot()), result.getPositions(), result.getScopePositions(), result.getUnitPositions(), originalInput);
+        }
       }
     }
     return debugInfoBuilder.getDebugInfo();

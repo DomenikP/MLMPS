@@ -4,6 +4,7 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.debugger/languages/com.mbeddr.core.debug/source_gen/com">
       <sourceFolder url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.debugger/languages/com.mbeddr.core.debug/source_gen/com" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.debugger/languages/com.mbeddr.core.debug/source_gen/com" />
     </content>
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/IdeaPlugin/build/artifacts" />

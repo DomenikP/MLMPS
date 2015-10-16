@@ -35,8 +35,13 @@ import jetbrains.mps.generator.template.ITemplateProcessor;
 import jetbrains.mps.generator.template.IfMacroContext;
 import jetbrains.mps.generator.template.SourceSubstituteMacroNodeContext;
 import jetbrains.mps.generator.template.SourceSubstituteMacroNodesContext;
+import jetbrains.mps.smodel.MPSModuleRepository;
 import jetbrains.mps.smodel.NodeReadEventsCaster;
 import jetbrains.mps.smodel.SNodePointer;
+import jetbrains.mps.smodel.tracing.TracedNode;
+import jetbrains.mps.smodel.tracing.TransformationTrace;
+import jetbrains.mps.smodel.tracing.nodes.SNodeProxy;
+import jetbrains.mps.textgen.trace.TracingSettings;
 import jetbrains.mps.textgen.trace.TracingUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -131,6 +136,18 @@ public final class TemplateProcessor implements ITemplateProcessor {
         outputChildNodes = applyMacro(rtTemplateChildNode.getFirstMacro(), context);
       } else {
         outputChildNodes = applyTemplate(rtTemplateChildNode, context);
+        if(TracingSettings.getInstance().isWriteGeneratorFile() && !outputChildNodes.isEmpty() && context.getInput() != null) {
+          SNode templateNode = rtTemplateNode.getTemplateNodeReference().resolve(MPSModuleRepository.getInstance());
+          TransformationTrace traceInstance = TransformationTrace.getInstance();
+          TracedNode inputTrace = traceInstance.addTrackedNode(new SNodeProxy(context.getInput().getNodeId(), context.getInput().getModel().getReference()));
+          for(SNode output : outputChildNodes) {
+            SNodeProxy outputProxy = new SNodeProxy(output.getNodeId(), context.getInput().getModel().getReference());
+            traceInstance.addNodeWithLazyResoledModel(outputProxy);
+            TracedNode outputTrace = traceInstance.addTrackedNode(outputProxy);
+            outputTrace.setInputNode(inputTrace.getNode());
+            outputTrace.setCreatedBy(new SNodeProxy(templateNode.getNodeId(), templateNode.getModel().getReference()));
+          }
+        }
       }
       SConcept originalConcept = rtTemplateChildNode.getConcept();
       String role = rtTemplateChildNode.getRoleInParent();

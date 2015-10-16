@@ -30,11 +30,14 @@ import jetbrains.mps.smodel.BootstrapLanguages;
 import jetbrains.mps.smodel.FastNodeFinderManager;
 import jetbrains.mps.smodel.Generator;
 import jetbrains.mps.smodel.IOperationContext;
+import jetbrains.mps.smodel.Language;
 import jetbrains.mps.smodel.LanguageAspect;
 import jetbrains.mps.smodel.ModelAccess;
 import jetbrains.mps.smodel.SModelRepository;
 import jetbrains.mps.smodel.SModelStereotype;
+import jetbrains.mps.smodel.tracing.TransformationTrace;
 import jetbrains.mps.smodel.UndoHelper;
+import jetbrains.mps.textgen.trace.TracingSettings;
 import jetbrains.mps.util.Computable;
 import jetbrains.mps.util.SNodeOperations;
 import jetbrains.mps.util.annotation.ToRemove;
@@ -46,6 +49,7 @@ import org.jetbrains.mps.openapi.model.SNode;
 import org.jetbrains.mps.openapi.persistence.PersistenceFacade;
 import org.jetbrains.mps.openapi.util.ProgressMonitor;
 
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -222,11 +226,22 @@ public final class GenerationFacade {
    */
   private boolean process(@NotNull final ProgressMonitor monitor, @NotNull final List<? extends SModel> inputModels) {
     final boolean[] result = new boolean[1];
+    final GeneratorLoggerAdapter logger = new GeneratorLoggerAdapter(myMessageHandler, myGenerationOptions.isShowInfo(), myGenerationOptions.isShowWarnings());
+    if(TracingSettings.getInstance().isWriteGeneratorFile()) {
+      TransformationTrace.getInstance().init();
+      for(SModel inputModel : inputModels) {
+        if(inputModel.getModule() instanceof Language) {
+          // Not supported by languages
+          logger.error("Writing Generator File is not supported for languages, please turn off 'Write Generator File' in preferences!");
+          throw new RuntimeException("Writing Generator File is not supported for languages, please turn off 'Write Generator File' in preferences!");
+        }
+      }
+    }
 
     // Calls requireWrite at some point
     myTransientModelsProvider.startGeneration(myGenerationOptions.getNumberOfModelsToKeep());
 
-    final GeneratorLoggerAdapter logger = new GeneratorLoggerAdapter(myMessageHandler, myGenerationOptions.isShowInfo(), myGenerationOptions.isShowWarnings());
+
 
     ModelAccess.instance().requireWrite(new Runnable() {
       @Override

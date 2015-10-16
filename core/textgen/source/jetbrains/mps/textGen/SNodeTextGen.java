@@ -20,6 +20,10 @@ import jetbrains.mps.smodel.IOperationContext;
 import jetbrains.mps.smodel.SModelStereotype;
 import jetbrains.mps.smodel.language.ConceptRegistry;
 import jetbrains.mps.smodel.runtime.TextGenDescriptor;
+import jetbrains.mps.smodel.tracing.TracedNode;
+import jetbrains.mps.smodel.tracing.TransformationTrace;
+import jetbrains.mps.smodel.tracing.nodes.SNodeProxy;
+import jetbrains.mps.textgen.trace.TracingSettings;
 import jetbrains.mps.util.SNodeOperations;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -94,7 +98,8 @@ public abstract class SNodeTextGen {
       return;
     }
 
-    getTextGenForNode(node).doGenerateText(node, myBuffer);
+    TextGenDescriptor textGenForNode = getTextGenForNode(node);
+    textGenForNode.doGenerateText(node, myBuffer);
   }
 
   public void indentBuffer() {

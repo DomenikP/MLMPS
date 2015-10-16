@@ -96,6 +96,9 @@
       <implementation-class>jetbrains.mps.ide.generator.GenerationSettings</implementation-class>
     </component>
     <component>
+      <implementation-class>jetbrains.mps.textgen.trace.TracingSettings</implementation-class>
+    </component>
+    <component>
       <implementation-class>jetbrains.mps.ide.generator.index.IndexBasedModelDigest</implementation-class>
     </component>
     <component>
@@ -196,6 +199,7 @@
     <projectConfigurable displayName="Project Settings" instance="jetbrains.mps.workbench.dialogs.project.properties.project.ProjectPropertiesPrefsPage" id="project.options.prefs.page" nonDefaultProject="true"/>
     <applicationConfigurable groupId="build" groupWeight="150" instance="jetbrains.mps.smodel.ModelValidationConfigurable" id="preferences.modelValidationSettings"/>
     <applicationConfigurable groupId="build" groupWeight="140" instance="jetbrains.mps.ide.generator.GenerationSettingsPreferencesPage" id="preferences.generationSettings"/>
+    <applicationConfigurable groupId="build" groupWeight="105" instance="jetbrains.mps.textgen.trace.TracingSettingsPreferencesPage" id="preferences.tracingSettings"/>
   </extensions>
 
 </components>

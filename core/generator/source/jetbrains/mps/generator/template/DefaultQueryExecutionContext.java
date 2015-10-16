@@ -37,11 +37,16 @@ import jetbrains.mps.generator.runtime.TemplateRootMappingRule;
 import jetbrains.mps.generator.runtime.TemplateRuleWithCondition;
 import jetbrains.mps.generator.runtime.TemplateWeavingRule;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.AttributeOperations;
+import jetbrains.mps.smodel.tracing.TracedNode;
+import jetbrains.mps.smodel.tracing.TransformationTrace;
+import jetbrains.mps.smodel.tracing.nodes.SNodeProxy;
+import jetbrains.mps.textgen.trace.TracingSettings;
 import jetbrains.mps.util.QueryMethodGenerated;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.mps.openapi.model.SModel;
 import org.jetbrains.mps.openapi.model.SNode;
+import org.jetbrains.mps.openapi.model.SNodeReference;
 
 import java.util.Collection;
 
@@ -253,7 +258,40 @@ public class DefaultQueryExecutionContext implements QueryExecutionContext {
   public Collection<SNode> tryToApply(TemplateReductionRule rule, TemplateContext context) throws GenerationException {
     TemplateExecutionEnvironment env = context.getEnvironment();
     try {
-      return rule.tryToApply(env, context);
+      SNodeReference ruleNode = rule.getRuleNode();
+      SNode inputNode = context.getInput();
+      SModel outputModel = env.getOutputModel();
+      Collection<SNode> outputNodes = (Collection<SNode>) rule.tryToApply(env, context);
+
+      if(TracingSettings.getInstance().isWriteGeneratorFile() && inputNode.getModel() != null) {
+        try {
+          TransformationTrace instance = TransformationTrace.getInstance();
+          SNodeProxy inputNodeProxy = new SNodeProxy(inputNode.getNodeId(), inputNode.getModel().getReference());
+          TracedNode inputNodeTrace = null;
+          if(instance.getTrackedNode(inputNodeProxy) == null) {
+            inputNodeTrace = instance.addTrackedNode(inputNodeProxy);
+          } else {
+            inputNodeTrace = instance.getTrackedNode(inputNodeProxy);
+          }
+
+          inputNodeTrace.addReducedBy(new SNodeProxy(ruleNode.getNodeId(), ruleNode.getModelReference()));
+          for (SNode outputNode : outputNodes) {
+            SNodeProxy outputNodeProxy = new SNodeProxy(outputNode.getNodeId(), outputModel.getReference());
+            instance.addNodeWithLazyResoledModel(outputNodeProxy);
+            inputNodeTrace.addOutputNode(outputNodeProxy);
+            TracedNode outputNodeTrace = instance.addTrackedNode(outputNodeProxy);
+            if(outputNodeTrace.getInputNode() == null) {
+              outputNodeTrace.setInputNode(inputNodeProxy);
+            }
+            if(outputNodeTrace.getCreatedBy() == null) {
+              outputNodeTrace.setCreatedBy(new SNodeProxy(ruleNode.getNodeId(), ruleNode.getModelReference()));
+            }
+          }
+        } catch(NullPointerException npe) {
+          npe.printStackTrace();
+        }
+      }
+      return outputNodes;
     } catch (GenerationException ex) {
       throw ex;
     } catch (Throwable t) {

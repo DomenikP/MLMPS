@@ -19,14 +19,16 @@ package jetbrains.mps.textgen.trace;
 import jetbrains.mps.generator.TransientModelsModule;
 import jetbrains.mps.generator.TransientModelsModule.TransientSModelDescriptor;
 import jetbrains.mps.generator.TransientModelsProvider;
-import jetbrains.mps.generator.TransientSModel;
-import jetbrains.mps.generator.traceInfo.TraceInfoUtil;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 import jetbrains.mps.project.Project;
 import jetbrains.mps.project.SModuleOperations;
 import jetbrains.mps.smodel.MPSModuleRepository;
+import jetbrains.mps.smodel.tracing.TracedNode;
+import jetbrains.mps.smodel.tracing.TransformationTrace;
+import jetbrains.mps.smodel.tracing.nodes.SNodeProxy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.mps.openapi.model.SModel;
+import org.jetbrains.mps.openapi.model.SModelReference;
 import org.jetbrains.mps.openapi.model.SNode;
 import org.jetbrains.mps.openapi.model.SNodeReference;
 import org.jetbrains.mps.openapi.model.SNodeUtil;
@@ -91,7 +93,8 @@ public class DebugInfoBuilder {
         // if a node is removed, generatedDebugInfo won't have an entry for it, while cachedDebugInfo has.
         // no position from this cached info, however, would pass unchangedFiles filter, and generatedDebugInfo
         // would stay empty. Here, we detect this case and drop stale debug info entries
-        final boolean noCachedData = generatedRoot.getPositions().isEmpty() && generatedRoot.getScopePositions().isEmpty() && generatedRoot.getUnitPositions().isEmpty();
+        final boolean noCachedData =
+            generatedRoot.getPositions().isEmpty() && generatedRoot.getScopePositions().isEmpty() && generatedRoot.getUnitPositions().isEmpty();
         if (!noCachedData) {
           generatedDebugInfo.putRootInfo(generatedRoot);
         }
@@ -139,24 +142,24 @@ public class DebugInfoBuilder {
   }
 
   private List<SModel> getTransientModels(SModel originalInputModel, SNode sNode) {
-    if(sNode != null && sNode.getModel() != null && sNode.getModel() instanceof TransientSModelDescriptor) {
+    if (sNode != null && sNode.getModel() != null && sNode.getModel() instanceof TransientSModelDescriptor) {
       Project project = SModuleOperations.getProjectForModule(originalInputModel.getModule());
       TransientModelsProvider transientModelsProvider = project.getComponent(TransientModelsProvider.class);
       TransientModelsModule transientModule = transientModelsProvider.getModule(originalInputModel.getModule());
-      List<SModel> transientModels  = transientModule.getModels();
+      List<SModel> transientModels = transientModule.getModels();
       Collections.sort(transientModels, new Comparator<SModel>() {
         @Override
         public int compare(SModel o1, SModel o2) {
 
           String[] o1SplittedModelName = o1.getModelName().split("@");
-          String o1ModelNumber = o1SplittedModelName[o1SplittedModelName.length-1];
+          String o1ModelNumber = o1SplittedModelName[o1SplittedModelName.length - 1];
           float o1ParsedModelNumber = Float.parseFloat(o1ModelNumber.replace("_", "."));
 
           String[] o2SplittedModelName = o2.getModelName().split("@");
-          String o2ModelNumber = o2SplittedModelName[o2SplittedModelName.length-1];
-          float o2ParsedModelNumber = Float.parseFloat(o2ModelNumber .replace("_", "."));
+          String o2ModelNumber = o2SplittedModelName[o2SplittedModelName.length - 1];
+          float o2ParsedModelNumber = Float.parseFloat(o2ModelNumber.replace("_", "."));
 
-          if(o1ParsedModelNumber == o2ParsedModelNumber) {
+          if (o1ParsedModelNumber == o2ParsedModelNumber) {
             return 0;
           } else if (o1ParsedModelNumber >= o2ParsedModelNumber) {
             return 1;
@@ -171,9 +174,9 @@ public class DebugInfoBuilder {
   }
 
   private TraceablePositionInfo getTracablePosInfoFromPreviousModel(List<TransientPositionInfo> previousTransientPosInfos, SNode current) {
-    for (TransientPositionInfo transientPosInfo: previousTransientPosInfos) {
-      for(SNode keyNode : transientPosInfo.positions.keySet()) {
-        if(keyNode.getNodeId().equals(current.getNodeId())) {
+    for (TransientPositionInfo transientPosInfo : previousTransientPosInfos) {
+      for (SNode keyNode : transientPosInfo.positions.keySet()) {
+        if (keyNode.getNodeId().equals(current.getNodeId())) {
           return transientPosInfo.positions.get(keyNode);
         }
       }
@@ -182,9 +185,10 @@ public class DebugInfoBuilder {
   }
 
   private TraceablePositionInfo getTracePosInfoFromReducedNode(List<TransientPositionInfo> previousTransientPosInfos, SNode current) {
-    for (TransientPositionInfo transientPosInfo: previousTransientPosInfos) {
-      for(SNode posNode: transientPosInfo.positions.keySet()) {
-        if(posNode.getUserObject(TracingUtil.ORIGINAL_INPUT_NODE) != null && ((SNodeReference)posNode.getUserObject(TracingUtil.ORIGINAL_INPUT_NODE)).resolve(MPSModuleRepository.getInstance()).equals(current)) {
+    for (TransientPositionInfo transientPosInfo : previousTransientPosInfos) {
+      for (SNode posNode : transientPosInfo.positions.keySet()) {
+        if (posNode.getUserObject(TracingUtil.ORIGINAL_INPUT_NODE) != null &&
+            ((SNodeReference) posNode.getUserObject(TracingUtil.ORIGINAL_INPUT_NODE)).resolve(MPSModuleRepository.getInstance()).equals(current)) {
           // there can be more than one!
           return transientPosInfo.positions.get(posNode);
         }
@@ -195,109 +199,204 @@ public class DebugInfoBuilder {
 
   private TraceablePositionInfo getTraceablePosition(List<TransientPositionInfo> previousTransientPosInfos, SNode current) {
     TraceablePositionInfo posInfoFromPrevModel = getTracablePosInfoFromPreviousModel(previousTransientPosInfos, current);
-    if(posInfoFromPrevModel != null) {
+    if (posInfoFromPrevModel != null) {
       return posInfoFromPrevModel;
     }
 
     TraceablePositionInfo tracePosInfoFromReducedNode = getTracePosInfoFromReducedNode(previousTransientPosInfos, current);
-    if(tracePosInfoFromReducedNode != null) {
+    if (tracePosInfoFromReducedNode != null) {
       return tracePosInfoFromReducedNode;
     }
 
     return null;
   }
 
-  public List<TransientPositionInfo> getTracedTransientModels(SModel inputModel, SNode nodeInOutputModel, Map<SNode, TraceablePositionInfo> positions, Map<SNode, ScopePositionInfo> scopePositions, Map<SNode, UnitPositionInfo> unitPositions) {
+  public List<TransientPositionInfo> getTracedTransientModels(SModel inputModel, SNode nodeInOutputModel, Map<SNode, TraceablePositionInfo> positions,
+      Map<SNode, ScopePositionInfo> scopePositions, Map<SNode, UnitPositionInfo> unitPositions) {
     final SRepository originRepo = inputModel.getRepository();
     List<TransientPositionInfo> transientPositionInfos = new ArrayList<TransientPositionInfo>();
-    List<SModel> transientModels = getTransientModels(inputModel, nodeInOutputModel);
-    final SModel outputModel = transientModels.get(transientModels.size()-1);
-    for (int index = transientModels.size()-1; index >= 0; index--) {
-      SModel currentModel = transientModels.get(index);
-      if(currentModel == outputModel) {
-        transientPositionInfos.add(new TransientPositionInfo(positions,scopePositions,unitPositions,currentModel));
+    List<SModel> models = getTransientModels(inputModel, nodeInOutputModel);
+    models.add(0, inputModel);
+    final SModel outputModel = models.get(models.size() - 1);
+
+    SModel nextLowerLevelModel = null;
+    List<TracedNode> lowerLevelTraces = new ArrayList<TracedNode>();
+    List<TracedNode> currentTraces = new ArrayList<TracedNode>();
+
+    if(TracingSettings.getInstance().isWriteGeneratorFile()) {
+      TransformationTrace.getInstance().resolveLazyNodes(models);
+    }
+
+
+    for (int index = models.size() - 1; index >= 0; index--) {
+      SModel currentModel = models.get(index);
+
+      // create traces for each model level
+      if (currentModel == outputModel) {
+        if (TracingSettings.getInstance().isWriteTracingFile()) {
+          transientPositionInfos.add(new TransientPositionInfo(positions, scopePositions, unitPositions, currentModel));
+        }
+        if (TracingSettings.getInstance().isWriteGeneratorFile()) {
+          for (SNode currentRoot : currentModel.getRootNodes()) {
+            for (SNode currentNode : SNodeOperations.getNodeDescendants(currentRoot, null, true)) {
+              SNodeProxy currentProxy = new SNodeProxy(currentNode.getNodeId(), currentNode.getModel().getReference());
+              TracedNode currentTracedNode =
+                  TransformationTrace.getInstance().getTrackedNode(new SNodeProxy(currentNode.getNodeId(), currentNode.getModel().getReference()));
+              if (currentTracedNode == null) {
+                currentTracedNode = TransformationTrace.getInstance().addTrackedNode(
+                    new SNodeProxy(currentNode.getNodeId(), currentNode.getModel().getReference()));
+              }
+              currentTraces.add(currentTracedNode);
+            }
+          }
+        }
       } else {
         Map<SNode, TraceablePositionInfo> transientPos = new HashMap<SNode, TraceablePositionInfo>();
         Map<SNode, ScopePositionInfo> transientScopePos = new HashMap<SNode, ScopePositionInfo>();
         Map<SNode, UnitPositionInfo> transientUnitPos = new HashMap<SNode, UnitPositionInfo>();
 
         Iterable<SNode> rootNodes = currentModel.getRootNodes();
-        for(SNode rootNode: rootNodes) {
-          List<SNode> descendants = SNodeOperations.getNodeDescendants(rootNode, null, false);
-          for(SNode node: descendants) {
-            boolean repo = currentModel.getModelName().contains("5_1") && node.getConcept().getName().contains("ReportStatement");
-            TraceablePositionInfo traceablePosition = getTraceablePosition(transientPositionInfos, node);
-            if(traceablePosition != null) {
-              TraceablePositionInfo newTracePos= new TraceablePositionInfo();
-              newTracePos.setPropertyString(traceablePosition.getPropertyString());
-              newTracePos.setNodeId(node.getNodeId().toString());
-              newTracePos.setEndPosition(traceablePosition.getEndPosition());
-              newTracePos.setStartPosition(traceablePosition.getStartPosition());
-              newTracePos.setConceptFqName(node.getConcept().getQualifiedName());
-              newTracePos.setFileName(traceablePosition.getFileName());
-              newTracePos.setStartLine(traceablePosition.getStartLine());
-              newTracePos.setEndLine(traceablePosition.getEndLine());
-              transientPos.put(node, newTracePos);
+        for (SNode currentRoot : currentModel.getRootNodes()) {
+          for (SNode currentNode : SNodeOperations.getNodeDescendants(currentRoot, null, true)) {
+            if (TracingSettings.getInstance().isWriteTracingFile()) {
+              TraceablePositionInfo traceablePosition = getTraceablePosition(transientPositionInfos, currentNode);
+
+              if (traceablePosition != null) {
+                TraceablePositionInfo newTracePos = new TraceablePositionInfo();
+                newTracePos.setPropertyString(traceablePosition.getPropertyString());
+                newTracePos.setNodeId(currentNode.getNodeId().toString());
+                newTracePos.setEndPosition(traceablePosition.getEndPosition());
+                newTracePos.setStartPosition(traceablePosition.getStartPosition());
+                newTracePos.setConceptFqName(currentNode.getConcept().getQualifiedName());
+                newTracePos.setFileName(traceablePosition.getFileName());
+                newTracePos.setStartLine(traceablePosition.getStartLine());
+                newTracePos.setEndLine(traceablePosition.getEndLine());
+                transientPos.put(currentNode, newTracePos);
+              }
+
+            }
+            if (TracingSettings.getInstance().isWriteGeneratorFile()) {
+              SNodeProxy currentProxy = new SNodeProxy(currentNode.getNodeId(), currentNode.getModel().getReference());
+              TracedNode currentTracedNode =
+                  TransformationTrace.getInstance().getTrackedNode(new SNodeProxy(currentNode.getNodeId(), currentNode.getModel().getReference()));
+              if (currentTracedNode == null) {
+                currentTracedNode = TransformationTrace.getInstance().addTrackedNode(
+                    new SNodeProxy(currentNode.getNodeId(), currentNode.getModel().getReference()));
+              }
+              currentTraces.add(currentTracedNode);
+
+              if (nextLowerLevelModel != null) {
+                SNode lowerLevelCopy = nextLowerLevelModel.getNode(currentNode.getNodeId());
+
+                if (lowerLevelCopy != null) {
+                  // this node is just a copy
+                  TracedNode lowerLevelCopyTrace = TransformationTrace.getInstance().getTrackedNode(
+                      new SNodeProxy(lowerLevelCopy.getNodeId(), lowerLevelCopy.getModel().getReference()));
+
+                  if (lowerLevelCopyTrace != null) {
+                    if (lowerLevelCopyTrace.getInputNode() == null) {
+                      lowerLevelCopyTrace.setInputNode(currentTracedNode.getNode());
+                    }
+                    currentTracedNode.addOutputNode(lowerLevelCopyTrace.getNode());
+                  }
+                }
+              }
+
+              List<TracedNode> nodesWithCurrentAsInput = new ArrayList<TracedNode>();
+              for (TracedNode lowerLevelTrace : lowerLevelTraces) {
+                if (lowerLevelTrace.getInputNode() != null && lowerLevelTrace.getInputNode().equals(currentProxy)) {
+                  nodesWithCurrentAsInput.add(lowerLevelTrace);
+                }
+              }
+
+              for (TracedNode lowerLevelWithInput : nodesWithCurrentAsInput) {
+                currentTracedNode.addOutputNode(lowerLevelWithInput.getNode());
+                currentTracedNode.addReducedBy(lowerLevelWithInput.getCreatedBy());
+              }
+
+              for (SNodeProxy outputNode : currentTracedNode.getOutputNodes()) {
+                TracedNode tracedOutputNode = TransformationTrace.getInstance().addTrackedNode(outputNode);
+                if (tracedOutputNode.getInputNode() == null || tracedOutputNode.getInputNode().getNode() == null) {
+                  tracedOutputNode.setInputNode(currentProxy);
+                }
+              }
             }
           }
         }
-        transientPositionInfos.add(new TransientPositionInfo(transientPos, transientScopePos, transientUnitPos, currentModel));
+        if (TracingSettings.getInstance().isWriteTracingFile()) {
+          transientPositionInfos.add(new TransientPositionInfo(transientPos, transientScopePos, transientUnitPos, currentModel));
+        }
+      }
+
+      if (TracingSettings.getInstance().isWriteGeneratorFile()) {
+        // the current model is the lower-level model for the next model
+        nextLowerLevelModel = currentModel;
+        lowerLevelTraces.clear();
+        lowerLevelTraces.addAll(currentTraces);
+        currentTraces.clear();
       }
     }
+
+
     return transientPositionInfos;
   }
 
-  public void fillDebugInfoWithTransientModels(String fileName, Map<SNode, TraceablePositionInfo> positions, Map<SNode, ScopePositionInfo> scopePositions, Map<SNode, UnitPositionInfo> unitPositions, SModel originalInputModel) {
+  public void fillDebugInfoWithTransientModels(String fileName, Map<SNode, TraceablePositionInfo> positions, Map<SNode, ScopePositionInfo> scopePositions,
+      Map<SNode, UnitPositionInfo> unitPositions, SModel originalInputModel) {
     if (positions == null && scopePositions == null && unitPositions == null) {
       return;
     }
+
     final SRepository originRepo = originalInputModel.getRepository();
     try {
-      if(!positions.keySet().isEmpty()) {
+      if (!positions.keySet().isEmpty()) {
         SNode keyNode = (SNode) positions.keySet().toArray()[0];
         List<TransientPositionInfo> transientModels = getTracedTransientModels(originalInputModel, keyNode, positions, scopePositions, unitPositions);
-        for(TransientPositionInfo posInfo : transientModels) {
-          Set<SNode> units = new HashSet<SNode>();
-          for (SNode out : posInfo.positions.keySet()) {
-            posInfo.positions.get(out).setNodeId(out.getNodeId().toString());
-            posInfo.positions.get(out).setFileName(fileName);
+        if (TracingSettings.getInstance().isWriteTracingFile()) {
+          for (TransientPositionInfo posInfo : transientModels) {
+            Set<SNode> units = new HashSet<SNode>();
+            for (SNode out : posInfo.positions.keySet()) {
+              posInfo.positions.get(out).setNodeId(out.getNodeId().toString());
+              posInfo.positions.get(out).setFileName(fileName);
 
-            SNode topmostAncestor = out.getContainingRoot();
-            units.add(topmostAncestor);
-            myDebugInfo.addPosition(posInfo.positions.get(out), topmostAncestor);
+              SNode topmostAncestor = out.getContainingRoot();
+              units.add(topmostAncestor);
+              myDebugInfo.addPosition(posInfo.positions.get(out), topmostAncestor);
 
+            }
+            for (SNode unit : units) {
+              UnitPositionInfo unitPosition = new UnitPositionInfo();
+              unitPosition.setUnitName(unit.getModel().getModelName() + "." + unit.getName());
+              unitPosition.setFileName(fileName);
+              unitPosition.setStartLine(1);
+              unitPosition.setEndLine(100);
+              unitPosition.setStartPosition(0);
+              unitPosition.setEndPosition(10);
+              unitPosition.setNodeId(unit.getNodeId().toString());
+              myDebugInfo.addUnitPosition(unitPosition, unit);
+            }
           }
-          for(SNode unit : units) {
-            UnitPositionInfo unitPosition = new UnitPositionInfo();
-            unitPosition.setUnitName(unit.getModel().getModelName()+"."+unit.getName());
-            unitPosition.setFileName(fileName);
-            unitPosition.setStartLine(1);
-            unitPosition.setEndLine(100);
-            unitPosition.setStartPosition(0);
-            unitPosition.setEndPosition(10);
-            unitPosition.setNodeId(unit.getNodeId().toString());
-            myDebugInfo.addUnitPosition(unitPosition,unit);
-          }
-
+        } else {
+          fillDebugInfo(fileName, positions, scopePositions, unitPositions, originalInputModel);
         }
       }
-    if (positions != null) {
-      for (SNode out : positions.keySet()) {
-        SNode input = getOriginalInputNodeForNearestParent(out, originRepo);
-        if (input != null && SNodeUtil.isAccessible(input, originRepo)) {
-          addTraceablePosition(out, originalInputModel, fileName, positions.get(out));
+      if (positions != null) {
+        for (SNode out : positions.keySet()) {
+          SNode input = getOriginalInputNodeForNearestParent(out, originRepo);
+          if (input != null && SNodeUtil.isAccessible(input, originRepo)) {
+            addTraceablePosition(out, originalInputModel, fileName, positions.get(out));
+          }
         }
       }
-    }
 
-    if (unitPositions != null) {
-      for (SNode out : unitPositions.keySet()) {
-        SNode input = getOriginalInputNodeForNearestParent(out, originRepo);
-        addUnitPosition(input, originalInputModel, fileName, unitPositions.get(out));
+      if (unitPositions != null) {
+        for (SNode out : unitPositions.keySet()) {
+          SNode input = getOriginalInputNodeForNearestParent(out, originRepo);
+          addUnitPosition(input, originalInputModel, fileName, unitPositions.get(out));
+        }
       }
-    }
     } catch (NullPointerException e) {
-      fillDebugInfo(fileName,positions,scopePositions,unitPositions,originalInputModel);
+      fillDebugInfo(fileName, positions, scopePositions, unitPositions, originalInputModel);
     }
 
 
@@ -321,13 +420,14 @@ public class DebugInfoBuilder {
     }*/
   }
 
-  public void fillDebugInfo(String fileName, Map<SNode, TraceablePositionInfo> positions, Map<SNode, ScopePositionInfo> scopePositions, Map<SNode, UnitPositionInfo> unitPositions, SModel originalInputModel) {
+  public void fillDebugInfo(String fileName, Map<SNode, TraceablePositionInfo> positions, Map<SNode, ScopePositionInfo> scopePositions,
+      Map<SNode, UnitPositionInfo> unitPositions, SModel originalInputModel) {
     if (positions == null && scopePositions == null && unitPositions == null) {
       return;
     }
     final SRepository originRepo = originalInputModel.getRepository();
     if (positions != null) {
-       for (SNode out : positions.keySet()) {
+      for (SNode out : positions.keySet()) {
         addTraceablePosition(out, originalInputModel, fileName, positions.get(out));
         /*SNode input = getOriginalInputNodeForNearestParent(out, originRepo);
         if (input != null && SNodeUtil.isAccessible(input, originRepo)) {

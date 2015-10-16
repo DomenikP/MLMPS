@@ -49,6 +49,7 @@ import jetbrains.mps.generator.runtime.TemplateSwitchMapping;
 import jetbrains.mps.generator.template.DefaultQueryExecutionContext;
 import jetbrains.mps.generator.template.QueryExecutionContext;
 import jetbrains.mps.smodel.SModelOperations;
+import jetbrains.mps.textgen.trace.TracingSettings;
 import jetbrains.mps.textgen.trace.TracingUtil;
 import jetbrains.mps.smodel.CopyUtil;
 import jetbrains.mps.smodel.DynamicReference;
@@ -498,7 +499,8 @@ public class TemplateGenerator extends AbstractTemplateGenerator {
     }
     ArrayList<SNode> outputNodes = new ArrayList<SNode>();
     while(it.hasNext()) {
-      SNode newInputNode = adoptIfForeign(it.next());
+      SNode origInput = it.next();
+      SNode newInputNode = adoptIfForeign(origInput);
 
       if (myDeltaBuilder != null) {
         myDeltaBuilder.enterNestedCopySrc(newInputNode);
@@ -506,6 +508,14 @@ public class TemplateGenerator extends AbstractTemplateGenerator {
       try {
         final String mappingName = outerContext.getInputName();
         Collection<SNode> _outputNodes = env.tryToReduce(newInputNode);
+
+        if(TracingSettings.getInstance().isWriteTracingFile()) {
+          // we copy the written objects
+          for(Object key : newInputNode.getUserObjectKeys()) {
+            origInput.putUserObject(key, newInputNode.getUserObject(key));
+          }
+        }
+
         if (_outputNodes != null) {
           if (mappingName != null && _outputNodes.size() == 1) {
             registerMappingLabel(newInputNode, mappingName, _outputNodes.iterator().next());

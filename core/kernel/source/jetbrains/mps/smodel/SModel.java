@@ -38,6 +38,10 @@ import jetbrains.mps.smodel.event.SModelReferenceEvent;
 import jetbrains.mps.smodel.event.SModelRootEvent;
 import jetbrains.mps.smodel.nodeidmap.INodeIdToNodeMap;
 import jetbrains.mps.smodel.nodeidmap.UniversalOptimizedNodeIdMap;
+import jetbrains.mps.smodel.tracing.TracedNode;
+import jetbrains.mps.smodel.tracing.TransformationTrace;
+import jetbrains.mps.smodel.tracing.nodes.SNodeProxy;
+import jetbrains.mps.textgen.trace.TracingSettings;
 import jetbrains.mps.util.Computable;
 import jetbrains.mps.util.SNodeOperations;
 import jetbrains.mps.util.annotation.ToRemove;
@@ -546,13 +550,20 @@ public class SModel implements SModelData {
 
   private void assignNewId(SNode node) {
     SNodeId id;
+    SNodeId oldID = node.getNodeId();
     id = generateUniqueId();
     while (myIdToNodeMap.containsKey(id)) {
       resetIdCounter();
       id = generateUniqueId();
     }
     node.setId(id);
+
     myIdToNodeMap.put(id, node);
+
+    if(TracingSettings.getInstance().isWriteGeneratorFile()) {
+      SNodeProxy oldProxy = new SNodeProxy(oldID, this.getReference());
+      TransformationTrace.getInstance().updateTrackedNode(oldProxy, new SNodeProxy(id,this.getReference()));
+    }
   }
 
   //---------imports manipulation--------

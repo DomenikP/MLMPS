@@ -99,6 +99,7 @@ public final class CopyUtil {
     if (node == null) return null;
 
     jetbrains.mps.smodel.SNode result = new jetbrains.mps.smodel.SNode(node.getConcept());
+    result.setId(node.getNodeId());
     mapping.put(node, result);
     jetbrains.mps.util.SNodeOperations.copyProperties(node, result);
     jetbrains.mps.util.SNodeOperations.copyUserObjects(node, result);
