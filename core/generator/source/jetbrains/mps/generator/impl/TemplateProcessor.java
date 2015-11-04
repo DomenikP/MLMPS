@@ -37,6 +37,7 @@ import jetbrains.mps.generator.template.SourceSubstituteMacroNodeContext;
 import jetbrains.mps.generator.template.SourceSubstituteMacroNodesContext;
 import jetbrains.mps.smodel.MPSModuleRepository;
 import jetbrains.mps.smodel.NodeReadEventsCaster;
+import jetbrains.mps.smodel.SNodeId;
 import jetbrains.mps.smodel.SNodePointer;
 import jetbrains.mps.smodel.tracing.TracedNode;
 import jetbrains.mps.smodel.tracing.TransformationTrace;
@@ -126,7 +127,16 @@ public final class TemplateProcessor implements ITemplateProcessor {
     myGenerator.registerMappingLabel(context.getInput(), context.getInputName(), outputNode); // XXX reduce_TemplateNode doesn't do that
 
     rtTemplateNode.apply(context, outputNode);
-
+    if(TracingSettings.getInstance().isWriteGeneratorFile() && outputNode != null) {
+      TransformationTrace traceInstance = TransformationTrace.getInstance();
+      TracedNode inputTrace = traceInstance.addTrackedNode(new SNodeProxy(context.getInput().getNodeId(), context.getInput().getModel().getReference()));
+      SNodeProxy outputProxy = new SNodeProxy(outputNode.getNodeId(), context.getInput().getModel().getReference());
+      traceInstance.addNodeWithLazyResoledModel(outputProxy);
+      //traceInstance.trackLazyCreatedByTrafo(outputProxy, rtTemplateNode.getTemplateNodeReference());
+      TracedNode outputTrace = traceInstance.addTrackedNode(outputProxy);
+      outputTrace.setInputNode(inputTrace.getNode());
+      outputTrace.setCreatedBy(new SNodeProxy(rtTemplateNode.getTemplateNodeReference().getNodeId(), rtTemplateNode.getTemplateNodeReference().getModelReference()));
+    }
     // process children
     context = context.subContext(); // drop label
     for (SNode templateChildNode : rtTemplateNode.getChildTemplates()) {
@@ -136,19 +146,31 @@ public final class TemplateProcessor implements ITemplateProcessor {
         outputChildNodes = applyMacro(rtTemplateChildNode.getFirstMacro(), context);
       } else {
         outputChildNodes = applyTemplate(rtTemplateChildNode, context);
-        if(TracingSettings.getInstance().isWriteGeneratorFile() && !outputChildNodes.isEmpty() && context.getInput() != null) {
-          SNode templateNode = rtTemplateNode.getTemplateNodeReference().resolve(MPSModuleRepository.getInstance());
-          TransformationTrace traceInstance = TransformationTrace.getInstance();
-          TracedNode inputTrace = traceInstance.addTrackedNode(new SNodeProxy(context.getInput().getNodeId(), context.getInput().getModel().getReference()));
-          for(SNode output : outputChildNodes) {
-            SNodeProxy outputProxy = new SNodeProxy(output.getNodeId(), context.getInput().getModel().getReference());
-            traceInstance.addNodeWithLazyResoledModel(outputProxy);
-            TracedNode outputTrace = traceInstance.addTrackedNode(outputProxy);
+      }
+
+      if(TracingSettings.getInstance().isWriteGeneratorFile() && !outputChildNodes.isEmpty() && context.getInput() != null) {
+        SNode templateNode = rtTemplateNode.getTemplateNodeReference().resolve(MPSModuleRepository.getInstance());
+        TransformationTrace traceInstance = TransformationTrace.getInstance();
+        TracedNode inputTrace = traceInstance.addTrackedNode(new SNodeProxy(context.getInput().getNodeId(), context.getInput().getModel().getReference()));
+        for(SNode output : outputChildNodes) {
+          SNodeProxy outputProxy = new SNodeProxy(output.getNodeId(), context.getInput().getModel().getReference());
+          traceInstance.addNodeWithLazyResoledModel(outputProxy);
+          traceInstance.trackLazyCreatedByTrafo(outputProxy, templateNode.getReference());
+          TracedNode outputTrace = traceInstance.addTrackedNode(outputProxy);
+          /*if(outputTrace.getInputNode() == null) {
             outputTrace.setInputNode(inputTrace.getNode());
+          } else {
+            int bla =0;
+          }*/
+          if(outputTrace.getCreatedBy() == null) {
             outputTrace.setCreatedBy(new SNodeProxy(templateNode.getNodeId(), templateNode.getModel().getReference()));
+          } else {
+            int bla =0;
           }
         }
       }
+
+
       SConcept originalConcept = rtTemplateChildNode.getConcept();
       String role = rtTemplateChildNode.getRoleInParent();
       RoleValidator validator = myGenerator.getChildRoleValidator(outputNode, role);

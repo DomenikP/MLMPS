@@ -977,8 +977,8 @@
       <node concept="Wx3nA" id="h19wS$8" role="jymVt">
         <property role="TrG5h" value="LOG" />
         <node concept="2YIFZM" id="4NZEZuOSMkY" role="33vP2m">
-          <ref role="37wK5l" to="fagr:~LogManager.getLogger(java.lang.Class):org.apache.log4j.Logger" resolve="getLogger" />
           <ref role="1Pybhc" to="fagr:~LogManager" resolve="LogManager" />
+          <ref role="37wK5l" to="fagr:~LogManager.getLogger(java.lang.String):org.apache.log4j.Logger" resolve="getLogger" />
           <node concept="3VsKOn" id="4NZEZuOSMkZ" role="37wK5m">
             <ref role="3VsUkX" node="h19wJUI" resolve="ClassWithLogStatements" />
           </node>

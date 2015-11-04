@@ -32,6 +32,7 @@ public class TracedNode {
   private SNodeProxy createdBy;
   private Set<SNodeProxy> reducedBy = new HashSet<SNodeProxy>();
   private SNodeProxy node;
+  private TextTrace trace;
 
   public TracedNode(SNodeProxy node) {
     this.node = node;
@@ -53,6 +54,7 @@ public class TracedNode {
   }
 
   public void addReducedBy(SNodeProxy trafo) {
+    if(trafo == null) return;
     for(SNodeProxy aTrafo : reducedBy) {
       if(aTrafo.equals(trafo)) {
         return;
@@ -104,5 +106,13 @@ public class TracedNode {
   @Override
   public boolean equals(Object obj) {
     return obj instanceof  TracedNode && ((TracedNode)obj).getNode().equals(this.getNode());
+  }
+
+  public void setTrace(TextTrace trace) {
+    this.trace = trace;
+  }
+
+  public TextTrace getTrace() {
+    return this.trace;
   }
 }

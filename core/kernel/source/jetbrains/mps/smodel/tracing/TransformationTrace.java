@@ -45,7 +45,7 @@ public class TransformationTrace {
   List<List<SNodeReference>> outputNodesForInputValues = new ArrayList<List<SNodeReference>>();
 
   List<Pair<SNodeReference, SNodeReference>> outputCreatedByTrafo = new ArrayList<Pair<SNodeReference, SNodeReference>>();
-
+  List<Pair<SNodeProxy, SNodeReference>> lazyOutputCreatedByTrafo = new ArrayList<Pair<SNodeProxy, SNodeReference>>();
 
   private TransformationTrace() {
 
@@ -69,6 +69,7 @@ public class TransformationTrace {
     outputCreatedByTrafo.clear();
     unregistredTracedNodes.clear();
     lazyResolvedModels.clear();
+    lazyOutputCreatedByTrafo.clear();
   }
 
   public void addNodeWithLazyResoledModel(SNodeProxy nodeProxy) {
@@ -95,6 +96,10 @@ public class TransformationTrace {
         }
       }
     }
+    for(Pair<SNodeProxy, SNodeReference> pair : lazyOutputCreatedByTrafo) {
+      outputCreatedByTrafo.add(new Pair<SNodeReference, SNodeReference>(pair.fst.getNode().getReference(), pair.snd));
+    }
+    lazyOutputCreatedByTrafo.clear();
     lazyResolvedModels.removeAll(proxiesToRemove);
   }
 
@@ -202,6 +207,10 @@ public class TransformationTrace {
         outputNodesForInputValues.get(index).add(outputNode);
       }
     }
+  }
+
+  public void trackLazyCreatedByTrafo(SNodeProxy proxy, SNodeReference trafo) {
+    lazyOutputCreatedByTrafo.add(new Pair<SNodeProxy, SNodeReference>(proxy, trafo));
   }
 
   public void trackCreatedByTrafo(SNodeReference outputNode, SNodeReference trafo) {

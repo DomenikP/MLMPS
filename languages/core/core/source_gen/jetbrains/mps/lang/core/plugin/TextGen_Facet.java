@@ -15,10 +15,9 @@ import jetbrains.mps.make.script.IResult;
 import jetbrains.mps.make.resources.IResource;
 import jetbrains.mps.make.script.IJobMonitor;
 import jetbrains.mps.make.resources.IPropertiesAccessor;
-import jetbrains.mps.smodel.resources.GResource;
-import jetbrains.mps.smodel.resources.TResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.mps.openapi.util.ProgressMonitor;
+import jetbrains.mps.smodel.resources.GResource;
 import jetbrains.mps.internal.collections.runtime.IWhereFilter;
 import jetbrains.mps.make.script.IFeedback;
 import jetbrains.mps.project.SModuleOperations;
@@ -51,6 +50,7 @@ import jetbrains.mps.textgen.trace.TraceInfoCache;
 import jetbrains.mps.generator.ModelExports;
 import java.util.Iterator;
 import jetbrains.mps.vfs.FileSystem;
+import jetbrains.mps.smodel.resources.TResource;
 import jetbrains.mps.generator.TransientModelsModule;
 import jetbrains.mps.cleanup.CleanupManager;
 import org.apache.log4j.Level;
@@ -92,7 +92,6 @@ public class TextGen_Facet extends IFacet.Stub {
   public IPropertiesPersistence propertiesPersistence() {
     return new TextGen_Facet.TargetProperties();
   }
-
   public static class Target_textGen implements ITargetEx2 {
     private static final ITarget.Name name = new ITarget.Name("jetbrains.mps.lang.core.TextGen.textGen");
     public Target_textGen() {
@@ -119,7 +118,7 @@ public class TextGen_Facet extends IFacet.Stub {
                   monitor.reportFeedback(new IFeedback.ERROR(String.valueOf("no output location for " + SNodeOperations.getModelLongName(resource.model()))));
                 }
               }
-              final Iterable<GResource> resourcesWithOutput = Sequence.fromIterable(input).where(new IWhereFilter<GResource>() {
+              Iterable<GResource> resourcesWithOutput = Sequence.fromIterable(input).where(new IWhereFilter<GResource>() {
                 public boolean accept(GResource it) {
                   return SModuleOperations.getOutputPathFor(it.model()) != null;
                 }
@@ -205,7 +204,6 @@ public class TextGen_Facet extends IFacet.Stub {
                           cgl.register(javaSourcesLoc, TraceInfoCache.getInstance().getGenerator());
                         }
                         cgl.register(javaSourcesLoc, new ModelExports.CacheGen());
-
                         tf.serializeCaches(cgl);
                         staleFileCollector.updateDelta(d1);
                         new StaleFilesCollector(cacheOutputDir).updateDelta(d2);

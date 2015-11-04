@@ -237,7 +237,6 @@ public final class GenerationFacade {
         }
       }
     }
-
     // Calls requireWrite at some point
     myTransientModelsProvider.startGeneration(myGenerationOptions.getNumberOfModelsToKeep());
 

@@ -2,6 +2,12 @@
 <module type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
+    <content url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/languages/DeSpec/source_gen">
+      <sourceFolder url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/languages/DeSpec/source_gen" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/languages/multiLevel.debugger/source_gen">
+      <sourceFolder url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/languages/multiLevel.debugger/source_gen" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.debugger/languages/com.mbeddr.core.debug/source_gen/com">
       <sourceFolder url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.debugger/languages/com.mbeddr.core.debug/source_gen/com" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.debugger/languages/com.mbeddr.core.debug/source_gen/com" />
@@ -14,6 +20,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="openapi" />
   </component>
 </module>
 

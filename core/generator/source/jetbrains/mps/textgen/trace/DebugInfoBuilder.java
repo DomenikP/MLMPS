@@ -23,6 +23,7 @@ import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 import jetbrains.mps.project.Project;
 import jetbrains.mps.project.SModuleOperations;
 import jetbrains.mps.smodel.MPSModuleRepository;
+import jetbrains.mps.smodel.tracing.TextTrace;
 import jetbrains.mps.smodel.tracing.TracedNode;
 import jetbrains.mps.smodel.tracing.TransformationTrace;
 import jetbrains.mps.smodel.tracing.nodes.SNodeProxy;
@@ -296,6 +297,9 @@ public class DebugInfoBuilder {
                   if (lowerLevelCopyTrace != null) {
                     if (lowerLevelCopyTrace.getInputNode() == null) {
                       lowerLevelCopyTrace.setInputNode(currentTracedNode.getNode());
+                    }
+                    if (lowerLevelCopyTrace.getTrace() != null) {
+                      currentTracedNode.setTrace(new TextTrace(lowerLevelCopyTrace.getTrace().liftedFunctionName, lowerLevelCopyTrace.getTrace().liftedFunctionName, lowerLevelCopyTrace.getTrace().inline));
                     }
                     currentTracedNode.addOutputNode(lowerLevelCopyTrace.getNode());
                   }

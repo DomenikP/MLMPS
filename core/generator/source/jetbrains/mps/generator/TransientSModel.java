@@ -17,6 +17,7 @@ package jetbrains.mps.generator;
 
 import jetbrains.mps.smodel.FastNodeFinder;
 import jetbrains.mps.smodel.SModel;
+import jetbrains.mps.smodel.event.SModelListener;
 import org.jetbrains.mps.openapi.model.SModelReference;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,8 +25,15 @@ import org.jetbrains.annotations.NotNull;
  * Evgeny Gryaznov, Apr 19, 2010
  */
 public class TransientSModel extends SModel {
+
+  private boolean isUpdateMode = false;
   public TransientSModel(@NotNull SModelReference modelReference) {
     super(modelReference);
+  }
+
+  @Override
+  public boolean isUpdateMode() {
+    return isUpdateMode;
   }
 
   @Override
@@ -46,5 +54,10 @@ public class TransientSModel extends SModel {
   public boolean canFireReadEvent() {
     /* enables read access tracking for incremental generation */
     return true;
+  }
+
+  @Override
+  public void addModelListener(@NotNull SModelListener listener) {
+    super.addModelListener(listener);
   }
 }
