@@ -301,6 +301,9 @@ public class DebugInfoBuilder {
                     if (lowerLevelCopyTrace.getTrace() != null) {
                       currentTracedNode.setTrace(new TextTrace(lowerLevelCopyTrace.getTrace().liftedFunctionName, lowerLevelCopyTrace.getTrace().liftedFunctionName, lowerLevelCopyTrace.getTrace().inline));
                     }
+//                    if (lowerLevelCopyTrace.getAnnotation() != null) {
+//                      currentTracedNode.setTrace(SNodeOperations.copyNode(lowerLevelCopyTrace.getAnnotation()));
+//                    }
                     currentTracedNode.addOutputNode(lowerLevelCopyTrace.getNode());
                   }
                 }

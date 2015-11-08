@@ -16,6 +16,7 @@
 package jetbrains.mps.smodel.tracing;
 
 import jetbrains.mps.smodel.tracing.nodes.SNodeProxy;
+import org.jetbrains.mps.openapi.model.SNode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +34,7 @@ public class TracedNode {
   private Set<SNodeProxy> reducedBy = new HashSet<SNodeProxy>();
   private SNodeProxy node;
   private TextTrace trace;
+  private SNode tracedAnnotation;
 
   public TracedNode(SNodeProxy node) {
     this.node = node;
@@ -114,5 +116,13 @@ public class TracedNode {
 
   public TextTrace getTrace() {
     return this.trace;
+  }
+
+  public void setTrace(SNode tracedAnnotation) {
+    this.tracedAnnotation = tracedAnnotation;
+  }
+
+  public SNode getAnnotation() {
+    return this.tracedAnnotation;
   }
 }
