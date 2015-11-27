@@ -129,6 +129,11 @@ public final class TemplateProcessor implements ITemplateProcessor {
     rtTemplateNode.apply(context, outputNode);
     if(TracingSettings.getInstance().isWriteGeneratorFile() && outputNode != null) {
       TransformationTrace traceInstance = TransformationTrace.getInstance();
+      if(context.getInput() != null && context.getInput().getModel() != null) {
+
+
+
+
       TracedNode inputTrace = traceInstance.addTrackedNode(new SNodeProxy(context.getInput().getNodeId(), context.getInput().getModel().getReference()));
       SNodeProxy outputProxy = new SNodeProxy(outputNode.getNodeId(), context.getInput().getModel().getReference());
       traceInstance.addNodeWithLazyResoledModel(outputProxy);
@@ -136,7 +141,8 @@ public final class TemplateProcessor implements ITemplateProcessor {
       TracedNode outputTrace = traceInstance.addTrackedNode(outputProxy);
       outputTrace.setInputNode(inputTrace.getNode());
       outputTrace.setCreatedBy(new SNodeProxy(rtTemplateNode.getTemplateNodeReference().getNodeId(), rtTemplateNode.getTemplateNodeReference().getModelReference()));
-    }
+      }
+     }
     // process children
     context = context.subContext(); // drop label
     for (SNode templateChildNode : rtTemplateNode.getChildTemplates()) {
@@ -148,7 +154,7 @@ public final class TemplateProcessor implements ITemplateProcessor {
         outputChildNodes = applyTemplate(rtTemplateChildNode, context);
       }
 
-      if(TracingSettings.getInstance().isWriteGeneratorFile() && !outputChildNodes.isEmpty() && context.getInput() != null) {
+      if(TracingSettings.getInstance().isWriteGeneratorFile() && !outputChildNodes.isEmpty() && context.getInput() != null && context.getInput().getModel() != null) {
         SNode templateNode = rtTemplateNode.getTemplateNodeReference().resolve(MPSModuleRepository.getInstance());
         TransformationTrace traceInstance = TransformationTrace.getInstance();
         TracedNode inputTrace = traceInstance.addTrackedNode(new SNodeProxy(context.getInput().getNodeId(), context.getInput().getModel().getReference()));

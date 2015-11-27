@@ -37,7 +37,7 @@ public class TransformationTrace {
   List<TracedNode> tracedNodes = new ArrayList<TracedNode>();
   List<TracedNode> unregistredTracedNodes = new ArrayList<TracedNode>();
   List<SNodeProxy> lazyResolvedModels = new ArrayList<SNodeProxy>();
-
+  List<SModelReference> transientModels = new ArrayList<SModelReference>();
   List<SNodeReference> reducedByTrafosKeys = new ArrayList<SNodeReference>();
   List<List<SNodeReference>> reducedByTrafosValues = new ArrayList<List<SNodeReference>>();
 
@@ -51,6 +51,29 @@ public class TransformationTrace {
 
   }
 
+  public void addTransientModel(SModelReference modelRef) {
+    if(!transientModels.contains(modelRef)) {
+      transientModels.add(modelRef);
+    }
+  }
+
+  public SModelReference getNextTransientModel(SModelReference modelRef) {
+    int index = transientModels.indexOf(modelRef);
+    if(index >= 0 &&  index+1 < transientModels.size()) {
+      return transientModels.get(index+1);
+    } else {
+      return transientModels.get(transientModels.size()-1);
+    }
+  }
+
+  public SModelReference getPreviousTransientModel(SModelReference modelRef) {
+    int index = transientModels.indexOf(modelRef);
+    if(index >= 0 &&  index-1 < transientModels.size()) {
+      return transientModels.get(index-1);
+    }else {
+      return transientModels.get(transientModels.size()-1);
+    }
+  }
 
   private static TransformationTrace INSTANCE;
   public static TransformationTrace getInstance() {
@@ -70,6 +93,7 @@ public class TransformationTrace {
     unregistredTracedNodes.clear();
     lazyResolvedModels.clear();
     lazyOutputCreatedByTrafo.clear();
+    transientModels.clear();
   }
 
   public void addNodeWithLazyResoledModel(SNodeProxy nodeProxy) {
@@ -137,6 +161,12 @@ public class TransformationTrace {
     TracedNode trackedNode = getTrackedNode(proxy);
     if(trackedNode == null) {
       TracedNode tracedNode = new TracedNode(proxy);
+
+      if(!transientModels.contains(proxy.getModelRef())) {
+        transientModels.add(proxy.getModelRef());
+      }
+
+
       this.tracedNodes.add(tracedNode);
       return tracedNode;
     }
