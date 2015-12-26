@@ -1,8 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <debug-info>
+  <concept fqn="jetbrains.mps.baseLanguage.structure.ConstructorDeclaration" />
+  <concept fqn="jetbrains.mps.baseLanguage.structure.IfStatement" />
+  <concept fqn="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" />
+  <concept fqn="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+  <concept fqn="jetbrains.mps.baseLanguage.structure.StaticFieldDeclaration" />
   <root>
     <file name="Language.java">
       <unit at="28,0,85,0" name="jetbrains.mps.baseLanguage.Language" />
+    </file>
+  </root>
+  <root nodeRef="db235bc4-1553-4d7b-862c-d91bde10f90f/r:5d716ad1-557e-46a9-be15-b660d37407bc(jetbrains.mps.baseLanguage@transient21/jetbrains.mps.baseLanguage@3_1)/8030316963146165346">
+    <file name="Language.java">
+      <node id="8030316963146165349" at="29,0,30,0" concept="4" trace="MODULE_REF" />
+      <node id="8030316963146166334" at="33,32,34,40" concept="3" />
+      <node id="8030316963146166336" at="38,27,39,13" concept="3" />
+      <node id="8030316963146165375" at="42,30,43,84" concept="3" />
+      <node id="8030316963146165387" at="46,47,47,121" concept="3" />
+      <node id="8030316963146166338" at="50,53,51,182" concept="3" />
+      <node id="8030316963146165421" at="55,58,56,50" concept="3" />
+      <node id="8030316963146165431" at="58,60,59,84" concept="3" />
+      <node id="8030316963146165441" at="61,63,62,90" concept="3" />
+      <node id="8030316963146165451" at="64,60,65,52" concept="3" />
+      <node id="8030316963146165461" at="67,58,68,50" concept="3" />
+      <node id="8030316963146165471" at="70,61,71,44" concept="3" />
+      <node id="8030316963146165481" at="73,61,74,86" concept="3" />
+      <node id="8030316963146165491" at="76,59,77,48" concept="3" />
+      <node id="8030316963146165501" at="79,54,80,44" concept="3" />
+      <node id="8030316963146165506" at="81,5,82,57" concept="3" />
+      <node id="8030316963146165353" at="30,0,32,0" concept="0" trace="Language#()V" />
+      <node id="8030316963146165373" at="42,0,45,0" concept="2" trace="getId#()Ljetbrains/mps/smodel/adapter/ids/SLanguageId;" />
+      <node id="8030316963146165416" at="54,101,57,5" concept="1" />
+      <node id="8030316963146165426" at="57,5,60,5" concept="1" />
+      <node id="8030316963146165436" at="60,5,63,5" concept="1" />
+      <node id="8030316963146165446" at="63,5,66,5" concept="1" />
+      <node id="8030316963146165456" at="66,5,69,5" concept="1" />
+      <node id="8030316963146165466" at="69,5,72,5" concept="1" />
+      <node id="8030316963146165476" at="72,5,75,5" concept="1" />
+      <node id="8030316963146165486" at="75,5,78,5" concept="1" />
+      <node id="8030316963146165496" at="78,5,81,5" concept="1" />
+      <node id="8030316963146165357" at="32,0,36,0" concept="2" trace="getNamespace#()Ljava/lang/String;" />
+      <node id="8030316963146165365" at="37,0,41,0" concept="2" trace="getVersion#()I" />
+      <node id="8030316963146165382" at="45,0,49,0" concept="2" trace="getExtendedLanguageIDs#()[Ljava/lang/String;" />
+      <node id="8030316963146165395" at="49,0,53,0" concept="2" trace="getGenerators#()Ljava/util/Collection;" />
+      <node id="8030316963146165407" at="53,0,84,0" concept="2" trace="createAspectDescriptor#(Ljava/lang/Class;)null" />
     </file>
   </root>
 </debug-info>

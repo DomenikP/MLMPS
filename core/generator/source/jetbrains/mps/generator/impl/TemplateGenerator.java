@@ -214,7 +214,7 @@ public class TemplateGenerator extends AbstractTemplateGenerator {
     // apply structural change delta onto input model
     if (myDeltaBuilder != null && myDeltaBuilder.hasChanges()) {
       ttrace.push("apply delta changes", false);
-      myDeltaBuilder.applyInplace(getInputModel());
+      myDeltaBuilder.applyInplace(getInputModel(),super.getOutputModel());
       ttrace.pop();
     }
 

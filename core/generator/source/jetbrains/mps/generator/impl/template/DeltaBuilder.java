@@ -23,6 +23,9 @@ import jetbrains.mps.smodel.FastNodeFinderManager;
 import jetbrains.mps.smodel.StaticReference;
 import jetbrains.mps.smodel.nodeidmap.INodeIdToNodeMap;
 import jetbrains.mps.smodel.nodeidmap.UniversalOptimizedNodeIdMap;
+import jetbrains.mps.smodel.tracing.TracedNode;
+import jetbrains.mps.smodel.tracing.TransformationTrace;
+import jetbrains.mps.smodel.tracing.nodes.SNodeProxy;
 import jetbrains.mps.util.SNodeOperations;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -388,7 +391,7 @@ public abstract class DeltaBuilder {
     }
   }
 
-  public void applyInplace(SModel inputModel) {
+  public void applyInplace(SModel inputModel, SModel outputModel) {
     // make the structure change, at last
     for (DeltaRoot dr : myDelta) {
       // additions from NewRoot and ReplacedRoot come in the order they were scheduled to be applied
@@ -423,8 +426,31 @@ public abstract class DeltaBuilder {
           SNode inputParentNode = tree.myInputNode.getParent();
           SNode anchor = tree.myInputNode.getNextSibling();
           inputParentNode.removeChild(tree.myInputNode);
+          System.out.println("in model: "+inputParentNode.getModel().getModelName());
+          System.out.println("inputModel: "+inputModel.getModelName());
+          System.out.println("outputModel: "+outputModel.getModelName());
           for (SNode replacement : tree.myReplacement) {
+            List<SNodeId> originals = new ArrayList<SNodeId>();
+            List<SNodeId> newIds = new ArrayList<SNodeId>();
+            List<SNode> desc = jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations.getNodeDescendants(replacement, null, true);
+            for(SNode treeNode :desc) {
+              originals.add(treeNode.getNodeId());
+            }
             inputParentNode.insertChildBefore(tree.myRoleInParent, replacement, anchor);
+            for(SNode treeNode :desc) {
+              newIds.add(treeNode.getNodeId());
+            }
+            for(int index = 0; index < newIds.size(); index++) {
+              if(newIds.get(index).equals(originals.get(index))) {
+                System.out.println("node is newly created: "+newIds.get(index).toString());
+              } else {
+                System.out.println("node "+newIds.get(index).toString()+" is copied from: "+originals.get(index).toString());
+                TracedNode tracedNode = TransformationTrace.getInstance().addTrackedNode(new SNodeProxy(newIds.get(index), outputModel.getReference()));
+                tracedNode.setInputNode(new SNodeProxy(originals.get(index), inputModel.getReference()));
+                tracedNode.setIsCopyFromAbove();
+              }
+            }
+
           }
         }
       }

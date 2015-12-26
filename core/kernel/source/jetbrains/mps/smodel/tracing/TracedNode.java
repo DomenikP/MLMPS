@@ -35,6 +35,7 @@ public class TracedNode {
   private SNodeProxy node;
   private TextTrace trace;
   private SNode tracedAnnotation;
+  private boolean isCopyFromAbove = false;
 
   public TracedNode(SNodeProxy node) {
     this.node = node;
@@ -42,6 +43,14 @@ public class TracedNode {
 
   public SNodeProxy getNode() {
     return this.node;
+  }
+
+  public boolean isCopyFromAbove() {
+    return (this.isCopyFromAbove || (this.getNode() != null && this.getNode().getNode() != null &&  this.getInputNode() != null && this.getInputNode().getNode() != null && this.getInputNode().getNode().getNodeId().equals(this.getNode().getNode().getNodeId())));
+  }
+
+  public void setIsCopyFromAbove() {
+    this.isCopyFromAbove = true;
   }
 
   public void setNode(SNodeProxy node) {

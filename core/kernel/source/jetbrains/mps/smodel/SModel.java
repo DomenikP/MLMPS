@@ -546,6 +546,7 @@ public class SModel implements SModelData {
     if (existingNode != null && existingNode != node) {
       assignNewId(node);
     }
+
   }
 
   private void assignNewId(SNode node) {
