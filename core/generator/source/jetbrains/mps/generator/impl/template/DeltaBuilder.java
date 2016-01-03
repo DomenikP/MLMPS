@@ -426,9 +426,9 @@ public abstract class DeltaBuilder {
           SNode inputParentNode = tree.myInputNode.getParent();
           SNode anchor = tree.myInputNode.getNextSibling();
           inputParentNode.removeChild(tree.myInputNode);
-          System.out.println("in model: "+inputParentNode.getModel().getModelName());
+          /*System.out.println("in model: "+inputParentNode.getModel().getModelName());
           System.out.println("inputModel: "+inputModel.getModelName());
-          System.out.println("outputModel: "+outputModel.getModelName());
+          System.out.println("outputModel: "+outputModel.getModelName());*/
           for (SNode replacement : tree.myReplacement) {
             List<SNodeId> originals = new ArrayList<SNodeId>();
             List<SNodeId> newIds = new ArrayList<SNodeId>();
@@ -442,9 +442,9 @@ public abstract class DeltaBuilder {
             }
             for(int index = 0; index < newIds.size(); index++) {
               if(newIds.get(index).equals(originals.get(index))) {
-                System.out.println("node is newly created: "+newIds.get(index).toString());
+//                System.out.println("node is newly created: "+newIds.get(index).toString());
               } else {
-                System.out.println("node "+newIds.get(index).toString()+" is copied from: "+originals.get(index).toString());
+//                System.out.println("node "+newIds.get(index).toString()+" is copied from: "+originals.get(index).toString());
                 TracedNode tracedNode = TransformationTrace.getInstance().addTrackedNode(new SNodeProxy(newIds.get(index), outputModel.getReference()));
                 tracedNode.setInputNode(new SNodeProxy(originals.get(index), inputModel.getReference()));
                 tracedNode.setIsCopyFromAbove();
