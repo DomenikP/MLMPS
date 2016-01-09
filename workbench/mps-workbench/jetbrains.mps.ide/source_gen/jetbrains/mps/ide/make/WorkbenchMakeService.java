@@ -39,6 +39,7 @@ import jetbrains.mps.messages.MessageKind;
 import jetbrains.mps.internal.make.runtime.util.FutureValue;
 import jetbrains.mps.make.dependencies.MakeSequence;
 import com.intellij.openapi.progress.PerformInBackgroundOption;
+import jetbrains.mps.textgen.trace.TracingSettings;
 import javax.swing.SwingUtilities;
 import com.intellij.ide.IdeEventQueue;
 import com.intellij.openapi.progress.ProgressManager;
@@ -225,6 +226,13 @@ public class WorkbenchMakeService extends AbstractMakeService implements IMakeSe
     Project ideaPrj = ProjectHelper.toIdeaProject(session.getProject());
     final MakeTask task = new MakeTask(ideaPrj, scrName, makeSeq, new WorkbenchMakeService.Controller(controller, mh), mh, PerformInBackgroundOption.DEAF) {
       @Override
+      public void onCancel() {
+        super.onCancel();
+        TracingSettings.getInstance().setWriteGeneratorFile(false);
+        TracingSettings.getInstance().setWriteTracingFile(false);
+      }
+
+      @Override
       protected void aboutToStart() {
         notifyListeners(new MakeNotification(WorkbenchMakeService.this, MakeNotification.Kind.SCRIPT_ABOUT_TO_START));
       }
@@ -233,6 +241,8 @@ public class WorkbenchMakeService extends AbstractMakeService implements IMakeSe
         currentProcess.compareAndSet(this, null);
         attemptCloseSession();
         notifyListeners(new MakeNotification(WorkbenchMakeService.this, MakeNotification.Kind.SCRIPT_FINISHED));
+        TracingSettings.getInstance().setWriteGeneratorFile(false);
+        TracingSettings.getInstance().setWriteTracingFile(false);
       }
       @Override
       protected void displayInfo(String info) {

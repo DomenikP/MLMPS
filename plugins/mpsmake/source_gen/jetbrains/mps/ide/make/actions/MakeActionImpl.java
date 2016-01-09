@@ -56,6 +56,7 @@ public class MakeActionImpl {
       public void doExecute(Runnable scriptRunnable) {
         if (GenerationCheckHelper.getInstance().checkModelsBeforeGenerationIfNeeded(project, new ProjectOperationContext(project), models)) {
           // ok to go 
+
           scriptRunnable.run();
         } else {
           // errors found, abort 
@@ -68,6 +69,7 @@ public class MakeActionImpl {
       IMakeService.INSTANCE.get().make(session, inputRes);
     }
   }
+
   private Iterable<SModel> selectModels(Iterable<? extends IResource> inputRes) {
     return Sequence.fromIterable(inputRes).translate(new ITranslator2<IResource, SModel>() {
       public Iterable<SModel> translate(IResource it) {

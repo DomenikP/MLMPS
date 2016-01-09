@@ -68,8 +68,10 @@
     <import index="odgu" ref="742f6602-5a2f-4313-aa6e-ae1cd4ffdc61/f:java_stub#742f6602-5a2f-4313-aa6e-ae1cd4ffdc61#jetbrains.mps.ide.make(MPS.Platform/jetbrains.mps.ide.make@java_stub)" />
     <import index="lphm" ref="498d89d2-c2e9-11e2-ad49-6cf049e62fe5/f:java_stub#498d89d2-c2e9-11e2-ad49-6cf049e62fe5#com.intellij.ide.ui(MPS.IDEA/com.intellij.ide.ui@java_stub)" />
     <import index="18oi" ref="6354ebe7-c22a-4a0f-ac54-50b52ab9b065/f:java_stub#6354ebe7-c22a-4a0f-ac54-50b52ab9b065#java.beans(JDK/java.beans@java_stub)" />
-    <import index="tprs" ref="r:00000000-0000-4000-0000-011c895904a4(jetbrains.mps.ide.actions)" implicit="true" />
+    <import index="ierg" ref="6ed54515-acc8-4d1e-a16c-9fd6cfe951ea/f:java_stub#6ed54515-acc8-4d1e-a16c-9fd6cfe951ea#jetbrains.mps.textgen.trace(MPS.Core/jetbrains.mps.textgen.trace@java_stub)" />
+    <import index="53gy" ref="6354ebe7-c22a-4a0f-ac54-50b52ab9b065/f:java_stub#6354ebe7-c22a-4a0f-ac54-50b52ab9b065#java.util.concurrent(JDK/java.util.concurrent@java_stub)" />
     <import index="l077" ref="6ed54515-acc8-4d1e-a16c-9fd6cfe951ea/f:java_stub#6ed54515-acc8-4d1e-a16c-9fd6cfe951ea#jetbrains.mps.extapi.module(MPS.Core/jetbrains.mps.extapi.module@java_stub)" implicit="true" />
+    <import index="tprs" ref="r:00000000-0000-4000-0000-011c895904a4(jetbrains.mps.ide.actions)" implicit="true" />
   </imports>
   <registry>
     <language id="a247e09e-2435-45ba-b8d2-07e93feba96a" name="jetbrains.mps.baseLanguage.tuples">
@@ -3693,12 +3695,13 @@
                               <property role="3SKdUp" value="ok to go" />
                             </node>
                           </node>
-                          <node concept="3clFbF" id="33nYo6lVp81" role="3cqZAp">
-                            <node concept="2OqwBi" id="33nYo6lVp82" role="3clFbG">
-                              <node concept="37vLTw" id="2BHiRxgm__a" role="2Oq$k0">
+                          <node concept="3clFbH" id="36ryG8mQF_O" role="3cqZAp" />
+                          <node concept="3clFbF" id="3NzeEoWVGrU" role="3cqZAp">
+                            <node concept="2OqwBi" id="3NzeEoWVGrV" role="3clFbG">
+                              <node concept="37vLTw" id="3NzeEoWVGrW" role="2Oq$k0">
                                 <ref role="3cqZAo" node="1AfPmE4ty$f" resolve="scriptRunnable" />
                               </node>
-                              <node concept="liA8E" id="33nYo6lVp84" role="2OqNvi">
+                              <node concept="liA8E" id="3NzeEoWVGrX" role="2OqNvi">
                                 <ref role="37wK5l" to="e2lb:~Runnable.run():void" resolve="run" />
                               </node>
                             </node>
@@ -3763,32 +3766,32 @@
           </node>
         </node>
         <node concept="3clFbH" id="1AfPmE4tJSc" role="3cqZAp" />
-        <node concept="3clFbJ" id="1AfPmE4tJRS" role="3cqZAp">
-          <node concept="2OqwBi" id="1AfPmE4tJRT" role="3clFbw">
-            <node concept="2YIFZM" id="1AfPmE4tJRU" role="2Oq$k0">
-              <ref role="1Pybhc" to="hfuk:7yGn3z4MRqM" resolve="IMakeService.INSTANCE" />
+        <node concept="3clFbJ" id="2beTp5HNSD3" role="3cqZAp">
+          <node concept="2OqwBi" id="2beTp5HNSD4" role="3clFbw">
+            <node concept="2YIFZM" id="2beTp5HNSD5" role="2Oq$k0">
               <ref role="37wK5l" to="hfuk:7yGn3z4MRr2" resolve="get" />
+              <ref role="1Pybhc" to="hfuk:7yGn3z4MRqM" resolve="IMakeService.INSTANCE" />
             </node>
-            <node concept="liA8E" id="1AfPmE4tJRV" role="2OqNvi">
+            <node concept="liA8E" id="2beTp5HNSD6" role="2OqNvi">
               <ref role="37wK5l" to="hfuk:7yGn3z4N63W" resolve="openNewSession" />
-              <node concept="37vLTw" id="3GM_nagTyAS" role="37wK5m">
+              <node concept="37vLTw" id="2beTp5HNSD7" role="37wK5m">
                 <ref role="3cqZAo" node="1AfPmE4ty$3" resolve="session" />
               </node>
             </node>
           </node>
-          <node concept="3clFbS" id="1AfPmE4tJRX" role="3clFbx">
-            <node concept="3clFbF" id="1AfPmE4tJRZ" role="3cqZAp">
-              <node concept="2OqwBi" id="1AfPmE4tJS1" role="3clFbG">
-                <node concept="2YIFZM" id="1AfPmE4tJS0" role="2Oq$k0">
+          <node concept="3clFbS" id="2beTp5HNSD8" role="3clFbx">
+            <node concept="3clFbF" id="2beTp5HNSDl" role="3cqZAp">
+              <node concept="2OqwBi" id="2beTp5HNSDn" role="3clFbG">
+                <node concept="2YIFZM" id="2beTp5HNSDo" role="2Oq$k0">
                   <ref role="1Pybhc" to="hfuk:7yGn3z4MRqM" resolve="IMakeService.INSTANCE" />
                   <ref role="37wK5l" to="hfuk:7yGn3z4MRr2" resolve="get" />
                 </node>
-                <node concept="liA8E" id="1AfPmE4tJS5" role="2OqNvi">
+                <node concept="liA8E" id="2beTp5HNSDp" role="2OqNvi">
                   <ref role="37wK5l" to="hfuk:7yGn3z4N64K" resolve="make" />
-                  <node concept="37vLTw" id="3GM_nagTrxV" role="37wK5m">
+                  <node concept="37vLTw" id="2beTp5HNSDq" role="37wK5m">
                     <ref role="3cqZAo" node="1AfPmE4ty$3" resolve="session" />
                   </node>
-                  <node concept="37vLTw" id="3GM_nagTx_k" role="37wK5m">
+                  <node concept="37vLTw" id="2beTp5HNSDr" role="37wK5m">
                     <ref role="3cqZAo" node="7tZeFupJF6F" resolve="inputRes" />
                   </node>
                 </node>
@@ -3806,6 +3809,7 @@
         </node>
       </node>
     </node>
+    <node concept="2tJIrI" id="3NzeEoWVG3N" role="jymVt" />
     <node concept="3clFb_" id="7tZeFupJF7$" role="jymVt">
       <property role="TrG5h" value="selectModels" />
       <node concept="3Tm6S6" id="7tZeFupJF7_" role="1B3o_S" />

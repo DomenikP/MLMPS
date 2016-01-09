@@ -65,6 +65,7 @@
     <import index="i119" ref="6ed54515-acc8-4d1e-a16c-9fd6cfe951ea/f:java_stub#6ed54515-acc8-4d1e-a16c-9fd6cfe951ea#jetbrains.mps.compiler(MPS.Core/jetbrains.mps.compiler@java_stub)" />
     <import index="odgu" ref="742f6602-5a2f-4313-aa6e-ae1cd4ffdc61/f:java_stub#742f6602-5a2f-4313-aa6e-ae1cd4ffdc61#jetbrains.mps.ide.make(MPS.Platform/jetbrains.mps.ide.make@java_stub)" />
     <import index="88zw" ref="8865b7a8-5271-43d3-884c-6fd1d9cfdd34/f:java_stub#8865b7a8-5271-43d3-884c-6fd1d9cfdd34#org.jetbrains.mps.openapi.module(MPS.OpenAPI/org.jetbrains.mps.openapi.module@java_stub)" />
+    <import index="ierg" ref="6ed54515-acc8-4d1e-a16c-9fd6cfe951ea/f:java_stub#6ed54515-acc8-4d1e-a16c-9fd6cfe951ea#jetbrains.mps.textgen.trace(MPS.Core/jetbrains.mps.textgen.trace@java_stub)" />
   </imports>
   <registry>
     <language id="a247e09e-2435-45ba-b8d2-07e93feba96a" name="jetbrains.mps.baseLanguage.tuples">
@@ -5587,6 +5588,30 @@
                           </node>
                         </node>
                       </node>
+                      <node concept="3clFbF" id="2i3hd8vL0M1" role="3cqZAp">
+                        <node concept="2OqwBi" id="2i3hd8vL0M2" role="3clFbG">
+                          <node concept="2YIFZM" id="2i3hd8vL0M3" role="2Oq$k0">
+                            <ref role="37wK5l" to="ierg:~TracingSettings.getInstance():jetbrains.mps.textgen.trace.IModifiableTraceSettings" resolve="getInstance" />
+                            <ref role="1Pybhc" to="ierg:~TracingSettings" resolve="TracingSettings" />
+                          </node>
+                          <node concept="liA8E" id="2i3hd8vL0M4" role="2OqNvi">
+                            <ref role="37wK5l" to="ierg:~IModifiableTraceSettings.setWriteGeneratorFile(boolean):void" resolve="setWriteGeneratorFile" />
+                            <node concept="3clFbT" id="2i3hd8vL0M5" role="37wK5m" />
+                          </node>
+                        </node>
+                      </node>
+                      <node concept="3clFbF" id="2i3hd8vL0M6" role="3cqZAp">
+                        <node concept="2OqwBi" id="2i3hd8vL0M7" role="3clFbG">
+                          <node concept="2YIFZM" id="2i3hd8vL0M8" role="2Oq$k0">
+                            <ref role="37wK5l" to="ierg:~TracingSettings.getInstance():jetbrains.mps.textgen.trace.IModifiableTraceSettings" resolve="getInstance" />
+                            <ref role="1Pybhc" to="ierg:~TracingSettings" resolve="TracingSettings" />
+                          </node>
+                          <node concept="liA8E" id="2i3hd8vL0M9" role="2OqNvi">
+                            <ref role="37wK5l" to="ierg:~IModifiableTraceSettings.setWriteTracingFile(boolean):void" resolve="setWriteTracingFile" />
+                            <node concept="3clFbT" id="2i3hd8vL0Ma" role="37wK5m" />
+                          </node>
+                        </node>
+                      </node>
                     </node>
                     <node concept="2AHcQZ" id="41innpAoSuQ" role="2AJF6D">
                       <ref role="2AI5Lk" to="e2lb:~Override" resolve="Override" />
@@ -5628,6 +5653,30 @@
                                 <ref role="Rm8GQ" to="hfuk:7lTD6YZtjgl" resolve="SCRIPT_FINISHED" />
                               </node>
                             </node>
+                          </node>
+                        </node>
+                      </node>
+                      <node concept="3clFbF" id="36ryG8mR1HO" role="3cqZAp">
+                        <node concept="2OqwBi" id="36ryG8mR1HP" role="3clFbG">
+                          <node concept="2YIFZM" id="36ryG8mR1HQ" role="2Oq$k0">
+                            <ref role="37wK5l" to="ierg:~TracingSettings.getInstance():jetbrains.mps.textgen.trace.IModifiableTraceSettings" resolve="getInstance" />
+                            <ref role="1Pybhc" to="ierg:~TracingSettings" resolve="TracingSettings" />
+                          </node>
+                          <node concept="liA8E" id="36ryG8mR1HR" role="2OqNvi">
+                            <ref role="37wK5l" to="ierg:~IModifiableTraceSettings.setWriteGeneratorFile(boolean):void" resolve="setWriteGeneratorFile" />
+                            <node concept="3clFbT" id="36ryG8mR1HS" role="37wK5m" />
+                          </node>
+                        </node>
+                      </node>
+                      <node concept="3clFbF" id="36ryG8mR1HT" role="3cqZAp">
+                        <node concept="2OqwBi" id="36ryG8mR1HU" role="3clFbG">
+                          <node concept="2YIFZM" id="36ryG8mR1HV" role="2Oq$k0">
+                            <ref role="37wK5l" to="ierg:~TracingSettings.getInstance():jetbrains.mps.textgen.trace.IModifiableTraceSettings" resolve="getInstance" />
+                            <ref role="1Pybhc" to="ierg:~TracingSettings" resolve="TracingSettings" />
+                          </node>
+                          <node concept="liA8E" id="36ryG8mR1HW" role="2OqNvi">
+                            <ref role="37wK5l" to="ierg:~IModifiableTraceSettings.setWriteTracingFile(boolean):void" resolve="setWriteTracingFile" />
+                            <node concept="3clFbT" id="36ryG8mR1HX" role="37wK5m" />
                           </node>
                         </node>
                       </node>
