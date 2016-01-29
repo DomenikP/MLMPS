@@ -19,6 +19,7 @@ import jetbrains.mps.generator.GenerationTrace;
 import jetbrains.mps.smodel.MPSModuleRepository;
 import jetbrains.mps.smodel.SNodePointer;
 import jetbrains.mps.smodel.tracing.TransformationTrace;
+import jetbrains.mps.textgen.trace.TracingSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.mps.openapi.model.SModelReference;
@@ -103,8 +104,11 @@ public class GenTraceImpl implements GenerationTrace {
 
   @Override
   public void nextStep(@NotNull SModelReference input, @NotNull SModelReference output) {
-    TransformationTrace.getInstance().addTransientModel(input);
-    TransformationTrace.getInstance().addTransientModel(output);
+    if(TracingSettings.getInstance().isWriteGeneratorFile()) {
+      TransformationTrace.getInstance().addTransientModel(input);
+      TransformationTrace.getInstance().addTransientModel(output);
+    }
+
     if (mySequence == null) {
       mySequence = myCurrent = new Phase(input, output, null);
     } else {

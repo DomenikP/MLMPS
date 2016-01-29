@@ -26,6 +26,7 @@ import jetbrains.mps.smodel.nodeidmap.UniversalOptimizedNodeIdMap;
 import jetbrains.mps.smodel.tracing.TracedNode;
 import jetbrains.mps.smodel.tracing.TransformationTrace;
 import jetbrains.mps.smodel.tracing.nodes.SNodeProxy;
+import jetbrains.mps.textgen.trace.TracingSettings;
 import jetbrains.mps.util.SNodeOperations;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -445,9 +446,12 @@ public abstract class DeltaBuilder {
 //                System.out.println("node is newly created: "+newIds.get(index).toString());
               } else {
 //                System.out.println("node "+newIds.get(index).toString()+" is copied from: "+originals.get(index).toString());
-                TracedNode tracedNode = TransformationTrace.getInstance().addTrackedNode(new SNodeProxy(newIds.get(index), outputModel.getReference()));
-                tracedNode.setInputNode(new SNodeProxy(originals.get(index), inputModel.getReference()));
-                tracedNode.setIsCopyFromAbove();
+                if(TracingSettings.getInstance().isWriteGeneratorFile()) {
+                  TracedNode tracedNode = TransformationTrace.getInstance().addTrackedNode(new SNodeProxy(newIds.get(index), outputModel.getReference()));
+                  tracedNode.setInputNode(new SNodeProxy(originals.get(index), inputModel.getReference()));
+                  tracedNode.setIsCopyFromAbove();
+                }
+
               }
             }
 

@@ -17,6 +17,7 @@ public class SPropertyAccess_Behavior {
   public static boolean virtual_lvalue_1262430001741498364(SAbstractConcept thisConcept) {
     return true;
   }
+  @Deprecated
   public static boolean virtual_applicableToConcept_1262430001741498358(SAbstractConcept thisConcept) {
     return true;
   }

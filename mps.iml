@@ -2,37 +2,6 @@
 <module type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/languages/DeSpec.Model/source_gen">
-      <sourceFolder url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/languages/DeSpec.Model/source_gen" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/languages/DeSpec/source_gen">
-      <sourceFolder url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/languages/DeSpec/source_gen" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/languages/mstatemachine/source_gen">
-      <sourceFolder url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/languages/mstatemachine/source_gen" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/languages/multiLevel.debugger/source_gen">
-      <sourceFolder url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/languages/multiLevel.debugger/source_gen" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/solutions/DeSpec.runtime/source_gen">
-      <sourceFolder url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/solutions/DeSpec.runtime/source_gen" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.core/languages/com.mbeddr.core.arrays/source_gen">
-      <sourceFolder url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.core/languages/com.mbeddr.core.arrays/source_gen" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.core/languages/com.mbeddr.core.modules.gen/source_gen">
-      <sourceFolder url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.core/languages/com.mbeddr.core.modules.gen/source_gen" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.core/languages/com.mbeddr.core.modules/source_gen">
-      <sourceFolder url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.core/languages/com.mbeddr.core.modules/source_gen" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.core/languages/com.mbeddr.core.udt/source_gen">
-      <sourceFolder url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.core/languages/com.mbeddr.core.udt/source_gen" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.debugger/languages/com.mbeddr.core.debug/source_gen/com">
-      <sourceFolder url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.debugger/languages/com.mbeddr.core.debug/source_gen/com" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/../mbeddr.core.phd/code/languages/com.mbeddr.debugger/languages/com.mbeddr.core.debug/source_gen/com" />
-    </content>
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/IdeaPlugin/build/artifacts" />
       <excludeFolder url="file://$MODULE_DIR$/IdeaPlugin/build/tmp" />

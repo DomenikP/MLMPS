@@ -8,6 +8,7 @@ import org.jetbrains.mps.openapi.model.SNode;
 public class SPropertyAccess_BehaviorDescriptor extends SNodeOperation_BehaviorDescriptor {
   public SPropertyAccess_BehaviorDescriptor() {
   }
+  @Deprecated
   public boolean virtual_applicableToConcept_1262430001741498358(SConcept thisConcept) {
     return SPropertyAccess_Behavior.virtual_applicableToConcept_1262430001741498358(thisConcept);
   }

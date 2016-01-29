@@ -563,7 +563,10 @@ public class SModel implements SModelData {
 
     if(TracingSettings.getInstance().isWriteGeneratorFile()) {
       SNodeProxy oldProxy = new SNodeProxy(oldID, this.getReference());
-      TransformationTrace.getInstance().updateTrackedNode(oldProxy, new SNodeProxy(id,this.getReference()));
+      if(TracingSettings.getInstance().isWriteGeneratorFile()) {
+        TransformationTrace.getInstance().updateTrackedNode(oldProxy, new SNodeProxy(id,this.getReference()));
+      }
+
     }
   }
 

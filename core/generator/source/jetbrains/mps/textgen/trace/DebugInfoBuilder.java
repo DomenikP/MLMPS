@@ -433,13 +433,13 @@ public class DebugInfoBuilder {
       return;
     }
     final SRepository originRepo = originalInputModel.getRepository();
-    if (positions != null) {
+   /* if (positions != null) {
       for (SNode out : positions.keySet()) {
         addTraceablePosition(out, originalInputModel, fileName, positions.get(out));
-        /*SNode input = getOriginalInputNodeForNearestParent(out, originRepo);
+        *//*SNode input = getOriginalInputNodeForNearestParent(out, originRepo);
         if (input != null && SNodeUtil.isAccessible(input, originRepo)) {
           addTraceablePosition(out, originalInputModel, fileName, positions.get(out));
-        }*/
+        }*//*
       }
     }
     if (scopePositions != null) {
@@ -455,6 +455,6 @@ public class DebugInfoBuilder {
         SNode input = getOriginalInputNodeForNearestParent(out, originRepo);
         addUnitPosition(input, originalInputModel, fileName, unitPositions.get(out));
       }
-    }
+    }*/
   }
 }
