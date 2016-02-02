@@ -226,7 +226,7 @@ public class Generate_Facet extends IFacet.Stub {
               TransientModelsProvider tmc = Generate_Facet.Target_checkParameters.vars(pa.global()).project().getComponent(TransientModelsProvider.class);
               vars(pa.global()).transientModelsProvider((tmc != null ? tmc : new TransientModelsProvider(Generate_Facet.Target_checkParameters.vars(pa.global()).project(), null)));
 
-              vars(pa.global()).transientModelsProvider().removeAllTransient();
+              //vars(pa.global()).transientModelsProvider().removeAllTransient();
               return new IResult.SUCCESS(_output_fi61u2_a0b);
             default:
               return new IResult.SUCCESS(_output_fi61u2_a0b);
