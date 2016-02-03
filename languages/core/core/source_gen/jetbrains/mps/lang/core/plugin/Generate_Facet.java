@@ -438,6 +438,10 @@ public class Generate_Facet extends IFacet.Stub {
                 }
               });
 
+              for(SModule module: retainedModels.value.keySet()) {
+                Generate_Facet.Target_configure.vars(pa.global()).transientModelsProvider().removeTransientModel(module);
+              }
+
               IGenerationHandler gh = new MakeGenerationHandler(new _FunctionTypes._return_P1_E0<Boolean, GResource>() {
                 public Boolean invoke(GResource data) {
                   data.retainedModels(MapSequence.fromMap(retainedModels.value).get(data.module()));

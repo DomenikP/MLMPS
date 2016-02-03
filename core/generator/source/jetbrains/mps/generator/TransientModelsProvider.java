@@ -30,6 +30,7 @@ import org.jetbrains.mps.openapi.module.SModule;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -60,7 +61,6 @@ public class TransientModelsProvider {
         }
       }
     });
-
     TransientSwapSpace space = getTransientSwapSpace();
     if (space != null) {
       space.clear();
@@ -136,6 +136,23 @@ public class TransientModelsProvider {
   public void removeAllTransient() {
     clearAll();
   }
+
+  public void removeTransientModel(final SModule module) {
+    // remove transient models for model
+    ModelAccess.instance().requireWrite(new Runnable() {
+      @Override
+      public void run() {
+        for (TransientModelsModule m : myModuleMap.values()) {
+          if(m.getOriginalModule().getModuleId().equals(module.getModuleId())) {
+            MPSModuleRepository.getInstance().unregisterModule(m, myOwner);
+            myModuleMap.remove(m);
+            myKeptModels = myKeptModels - m.getModels().size();
+          }
+        }
+      }
+    });
+  }
+
 
   public Iterable<TransientModelsModule> getModules() {
     ModelAccess.assertLegalRead();
