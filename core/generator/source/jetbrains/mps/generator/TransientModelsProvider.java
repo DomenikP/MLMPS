@@ -142,12 +142,15 @@ public class TransientModelsProvider {
     ModelAccess.instance().requireWrite(new Runnable() {
       @Override
       public void run() {
-        for (TransientModelsModule m : myModuleMap.values()) {
-          if(m.getOriginalModule().getModuleId().equals(module.getModuleId())) {
-            MPSModuleRepository.getInstance().unregisterModule(m, myOwner);
-            myModuleMap.remove(m);
-            myKeptModels = myKeptModels - m.getModels().size();
+        List<SModule> removals = new ArrayList<SModule>();
+        for (SModule m : myModuleMap.keySet()) {
+          if(m.getModuleId().equals(module.getModuleId())) {
+            removals.add(m);
           }
+        }
+        for(SModule removal : removals) {
+          MPSModuleRepository.getInstance().unregisterModule(myModuleMap.get(removal), myOwner);
+          myModuleMap.remove(removal);
         }
       }
     });
