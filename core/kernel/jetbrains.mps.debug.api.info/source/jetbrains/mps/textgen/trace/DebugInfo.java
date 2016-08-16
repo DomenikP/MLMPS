@@ -59,15 +59,15 @@ public class DebugInfo {
     return (node == null ? null : node.getReference());
   }
 
-  /*package*/ void addPosition(TraceablePositionInfo position, SNode containingRoot) {
+  /*package*/ synchronized void addPosition(TraceablePositionInfo position, SNode containingRoot) {
     getOrCreateDebugInfoRoot(containingRoot).addPosition(position);
   }
 
-  /*package*/ void addScopePosition(ScopePositionInfo position, SNode containingRoot) {
+  /*package*/ synchronized void addScopePosition(ScopePositionInfo position, SNode containingRoot) {
     getOrCreateDebugInfoRoot(containingRoot).addScopePosition(position);
   }
 
-  /*package*/ void addUnitPosition(UnitPositionInfo unitPosition, SNode containingRoot) {
+  /*package*/ synchronized void addUnitPosition(UnitPositionInfo unitPosition, SNode containingRoot) {
     getOrCreateDebugInfoRoot(containingRoot).addUnitPosition(unitPosition);
   }
 

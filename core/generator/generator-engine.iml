@@ -18,7 +18,7 @@
     <orderEntry type="module" module-name="Closures-runtime" />
     <orderEntry type="module" module-name="Tuples-runtime" />
     <orderEntry type="module" module-name="persistence" />
-    <orderEntry type="module" module-name="openapi" />
+    <orderEntry type="module" module-name="openapi" scope="RUNTIME" />
     <orderEntry type="module" module-name="textgen" />
     <orderEntry type="module" module-name="debuginfo-api" />
     <orderEntry type="library" name="Annotations" level="project" />
@@ -32,6 +32,7 @@
     <orderEntry type="library" scope="TEST" name="JUnit4" level="project" />
     <orderEntry type="library" scope="TEST" name="Idea-plaform" level="project" />
     <orderEntry type="library" name="Idea-plaform" level="project" />
+    <orderEntry type="library" name="IDEA runtime jars" level="project" />
   </component>
 </module>
 

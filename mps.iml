@@ -2,6 +2,15 @@
 <module type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
+    <content url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/solutions/Tracing.runtime/source_gen">
+      <sourceFolder url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/solutions/Tracing.runtime/source_gen" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/solutions/mbeddr.debugger.runtime/source_gen">
+      <sourceFolder url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/solutions/mbeddr.debugger.runtime/source_gen" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/solutions/mulder.model.runtime/source_gen">
+      <sourceFolder url="file://$MODULE_DIR$/../languages.phd/code/languages/multilevel/solutions/mulder.model.runtime/source_gen" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/IdeaPlugin/build/artifacts" />
       <excludeFolder url="file://$MODULE_DIR$/IdeaPlugin/build/tmp" />

@@ -6,19 +6,16 @@ import org.jetbrains.mps.openapi.model.SNode;
 import org.jetbrains.mps.openapi.persistence.PersistenceFacade;
 import jetbrains.mps.smodel.SModelUtil_new;
 import jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory;
-import jetbrains.mps.smodel.SReference;
 
 public class TemplateFunctionParameter_generationContext_Behavior {
   public static void init(SNode thisNode) {
   }
   public static SNode virtual_getType_2443692612523876968(SNode thisNode) {
-    return _quotation_createNode_fkq6n5_a0a0();
+    return createGenerationContextType_fkq6n5_a0a0();
   }
-  private static SNode _quotation_createNode_fkq6n5_a0a0() {
+  private static SNode createGenerationContextType_fkq6n5_a0a0() {
     PersistenceFacade facade = PersistenceFacade.getInstance();
-    SNode quotedNode_1 = null;
-    quotedNode_1 = SModelUtil_new.instantiateConceptDeclaration(MetaAdapterFactory.getConcept(0xf3061a5392264cc5L, 0xa443f952ceaf5816L, 0x101de48bf9eL, "jetbrains.mps.baseLanguage.structure.ClassifierType"), null, null, false);
-    quotedNode_1.setReference(MetaAdapterFactory.getReferenceLink(0xf3061a5392264cc5L, 0xa443f952ceaf5816L, 0x101de48bf9eL, 0x101de490babL, "classifier"), SReference.create(MetaAdapterFactory.getReferenceLink(0xf3061a5392264cc5L, 0xa443f952ceaf5816L, 0x101de48bf9eL, 0x101de490babL, "classifier"), quotedNode_1, facade.createModelReference("6ed54515-acc8-4d1e-a16c-9fd6cfe951ea/f:java_stub#6ed54515-acc8-4d1e-a16c-9fd6cfe951ea#jetbrains.mps.generator.template(MPS.Core/jetbrains.mps.generator.template@java_stub)"), facade.createNodeId("~TemplateQueryContext")));
-    return quotedNode_1;
+    SNode n1 = SModelUtil_new.instantiateConceptDeclaration(MetaAdapterFactory.getConcept(0xd7706f639be2479cL, 0xa3daae92af1e64d5L, 0x11b5282d0e1L, "jetbrains.mps.lang.generator.generationContext.structure.GenerationContextType"), null, null, false);
+    return n1;
   }
 }

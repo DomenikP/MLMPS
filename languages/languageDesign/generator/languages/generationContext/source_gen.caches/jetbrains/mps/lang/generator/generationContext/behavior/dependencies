@@ -306,7 +306,6 @@
   </dependency>
   <dependency className="jetbrains.mps.lang.generator.generationContext.behavior.TemplateFunctionParameter_generationContext_Behavior" file="TemplateFunctionParameter_generationContext_Behavior.java">
     <classNode dependClassName="jetbrains.mps.smodel.SModelUtil_new" />
-    <classNode dependClassName="jetbrains.mps.smodel.SReference" />
     <classNode dependClassName="jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
     <classNode dependClassName="org.jetbrains.mps.openapi.persistence.PersistenceFacade" />

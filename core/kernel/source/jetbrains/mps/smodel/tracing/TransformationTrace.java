@@ -15,7 +15,6 @@
  */
 package jetbrains.mps.smodel.tracing;
 
-import com.sun.tools.javac.util.Pair;
 import jetbrains.mps.smodel.MPSModuleRepository;
 import jetbrains.mps.smodel.SNodePointer;
 import jetbrains.mps.smodel.tracing.nodes.SNodeProxy;
@@ -23,11 +22,14 @@ import jetbrains.mps.textgen.trace.TracingSettings;
 import org.jetbrains.mps.openapi.model.*;
 import org.jetbrains.mps.openapi.model.SModel;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -35,6 +37,7 @@ import java.util.Set;
  */
 public class TransformationTrace {
   List<TracedNode> tracedNodes = new ArrayList<TracedNode>();
+
   List<TracedNode> unregistredTracedNodes = new ArrayList<TracedNode>();
   List<SNodeProxy> lazyResolvedModels = new ArrayList<SNodeProxy>();
   List<SModelReference> transientModels = new ArrayList<SModelReference>();
@@ -44,20 +47,20 @@ public class TransformationTrace {
   List<SNodeReference> outputNodesForInputKeys = new ArrayList<SNodeReference>();
   List<List<SNodeReference>> outputNodesForInputValues = new ArrayList<List<SNodeReference>>();
 
-  List<Pair<SNodeReference, SNodeReference>> outputCreatedByTrafo = new ArrayList<Pair<SNodeReference, SNodeReference>>();
-  List<Pair<SNodeProxy, SNodeReference>> lazyOutputCreatedByTrafo = new ArrayList<Pair<SNodeProxy, SNodeReference>>();
+  List<Map.Entry<SNodeReference, SNodeReference>> outputCreatedByTrafo = new ArrayList<Map.Entry<SNodeReference, SNodeReference>>();
+  List<Map.Entry<SNodeProxy, SNodeReference>> lazyOutputCreatedByTrafo = new ArrayList<Map.Entry<SNodeProxy, SNodeReference>>();
 
   private TransformationTrace() {
 
   }
 
-  public void addTransientModel(SModelReference modelRef) {
+  public synchronized void addTransientModel(SModelReference modelRef) {
     if(!transientModels.contains(modelRef)) {
       transientModels.add(modelRef);
     }
   }
 
-  public SModelReference getNextTransientModel(SModelReference modelRef) {
+  public synchronized SModelReference getNextTransientModel(SModelReference modelRef) {
     int index = transientModels.indexOf(modelRef);
     if(index >= 0 &&  index+1 < transientModels.size()) {
       return transientModels.get(index+1);
@@ -66,7 +69,7 @@ public class TransformationTrace {
     }
   }
 
-  public SModelReference getPreviousTransientModel(SModelReference modelRef) {
+  public synchronized SModelReference getPreviousTransientModel(SModelReference modelRef) {
     int index = transientModels.indexOf(modelRef);
     if(index >= 0 &&  index-1 < transientModels.size()) {
       return transientModels.get(index-1);
@@ -89,6 +92,7 @@ public class TransformationTrace {
     outputNodesForInputKeys.clear();
     outputNodesForInputValues.clear();
     tracedNodes.clear();
+
     outputCreatedByTrafo.clear();
     unregistredTracedNodes.clear();
     lazyResolvedModels.clear();
@@ -96,11 +100,11 @@ public class TransformationTrace {
     transientModels.clear();
   }
 
-  public void addNodeWithLazyResoledModel(SNodeProxy nodeProxy) {
+  public synchronized void addNodeWithLazyResoledModel(SNodeProxy nodeProxy) {
     lazyResolvedModels.add(nodeProxy);
   }
 
-  public void resolveLazyNodes(List<SModel> models) {
+  public synchronized void resolveLazyNodes(List<SModel> models) {
     List<SNodeProxy> proxiesToRemove = new ArrayList<SNodeProxy>();
     for(SNodeProxy proxy : lazyResolvedModels) {
       boolean createdModelReached = false;
@@ -120,14 +124,14 @@ public class TransformationTrace {
         }
       }
     }
-    for(Pair<SNodeProxy, SNodeReference> pair : lazyOutputCreatedByTrafo) {
-      outputCreatedByTrafo.add(new Pair<SNodeReference, SNodeReference>(pair.fst.getNode().getReference(), pair.snd));
+    for(Map.Entry<SNodeProxy, SNodeReference> pair : lazyOutputCreatedByTrafo) {
+      outputCreatedByTrafo.add(new AbstractMap.SimpleImmutableEntry<SNodeReference, SNodeReference>(pair.getKey().getNode().getReference(), pair.getValue()));
     }
     lazyOutputCreatedByTrafo.clear();
     lazyResolvedModels.removeAll(proxiesToRemove);
   }
 
-  public void resolveUnregistredNode(SNodeId nodeId, SModelReference reference) {
+  public synchronized void resolveUnregistredNode(SNodeId nodeId, SModelReference reference) {
     TracedNode trace = null;
     for(int index = 0; index < unregistredTracedNodes.size(); index++) {
       TracedNode tracedNode = unregistredTracedNodes.get(index);
@@ -140,7 +144,7 @@ public class TransformationTrace {
     }
   }
 
-  public void updateTrackedNode(SNodeProxy old, SNodeProxy newProxy) {
+  public synchronized void updateTrackedNode(SNodeProxy old, SNodeProxy newProxy) {
     TracedNode oldTrackedNode = getTrackedNode(old);
     if(oldTrackedNode != null) {
       this.tracedNodes.remove(oldTrackedNode);
@@ -157,7 +161,7 @@ public class TransformationTrace {
     }
   }
 
-  public TracedNode addTrackedNode(SNodeProxy proxy) {
+  public synchronized TracedNode addTrackedNode(SNodeProxy proxy) {
     TracedNode trackedNode = getTrackedNode(proxy);
     if(trackedNode == null) {
       TracedNode tracedNode = new TracedNode(proxy);
@@ -183,7 +187,7 @@ public class TransformationTrace {
   }
 
 
-  public void trackReducedByTrafo(SNodeReference inputNode, SNodeReference trafo) {
+  public synchronized void trackReducedByTrafo(SNodeReference inputNode, SNodeReference trafo) {
     int index = indexOf(inputNode, reducedByTrafosKeys);
     if(index == -1) {
       reducedByTrafosKeys.add(inputNode);
@@ -195,7 +199,7 @@ public class TransformationTrace {
     }
   }
 
-  public void trackOutputNodes(SNodeReference inputNode, Collection<org.jetbrains.mps.openapi.model.SNodeId> outputNodes, SModel outputModel) {
+  public synchronized void trackOutputNodes(SNodeReference inputNode, Collection<org.jetbrains.mps.openapi.model.SNodeId> outputNodes, SModel outputModel) {
     int index = indexOf(inputNode, outputNodesForInputKeys);
     if(index == -1) {
       outputNodesForInputKeys.add(inputNode);
@@ -211,7 +215,7 @@ public class TransformationTrace {
     }
   }
 
-  public void trackOutputNode(SNodeReference inputNode, org.jetbrains.mps.openapi.model.SNodeId outputNode, SModel outputNodeModel) {
+  public synchronized void trackOutputNode(SNodeReference inputNode, org.jetbrains.mps.openapi.model.SNodeId outputNode, SModel outputNodeModel) {
     int index = indexOf(inputNode, outputNodesForInputKeys);
     if(index == -1) {
       outputNodesForInputKeys.add(inputNode);
@@ -223,7 +227,7 @@ public class TransformationTrace {
     }
   }
 
-  public void trackResolvedOutputNodes(SNodeReference inputNode, Collection<SNodeReference> outputNodes) {
+  public synchronized void trackResolvedOutputNodes(SNodeReference inputNode, Collection<SNodeReference> outputNodes) {
     int index = indexOf(inputNode, outputNodesForInputKeys);
     if(index == -1) {
       outputNodesForInputKeys.add(inputNode);
@@ -239,12 +243,12 @@ public class TransformationTrace {
     }
   }
 
-  public void trackLazyCreatedByTrafo(SNodeProxy proxy, SNodeReference trafo) {
-    lazyOutputCreatedByTrafo.add(new Pair<SNodeProxy, SNodeReference>(proxy, trafo));
+  public synchronized void trackLazyCreatedByTrafo(SNodeProxy proxy, SNodeReference trafo) {
+    lazyOutputCreatedByTrafo.add(new AbstractMap.SimpleImmutableEntry<SNodeProxy, SNodeReference>(proxy, trafo));
   }
 
-  public void trackCreatedByTrafo(SNodeReference outputNode, SNodeReference trafo) {
-    outputCreatedByTrafo.add(new Pair<SNodeReference, SNodeReference>(outputNode, trafo));
+  public synchronized void trackCreatedByTrafo(SNodeReference outputNode, SNodeReference trafo) {
+    outputCreatedByTrafo.add(new AbstractMap.SimpleImmutableEntry<SNodeReference, SNodeReference>(outputNode, trafo));
   }
 
   public List<SNodeReference> getOutputNodes(SNodeReference inputNode) {
@@ -278,9 +282,9 @@ public class TransformationTrace {
   }
 
   public SNodeReference getCreatedByTrafo(SNodeReference node) {
-    for(Pair<SNodeReference, SNodeReference> pair : outputCreatedByTrafo) {
-      if(pair.fst.equals(node)) {
-        return pair.snd;
+    for(Map.Entry<SNodeReference, SNodeReference> pair : outputCreatedByTrafo) {
+      if(pair.getKey().equals(node)) {
+        return pair.getValue();
       }
     }
     return null;

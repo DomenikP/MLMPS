@@ -1,26 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dependenciesRoot>
   <dependency className="jetbrains.mps.baseLanguage.tuples.runtime.MultiTuple" file="MultiTuple.java">
-    <classNode dependClassName="MultiTuple._0" />
-    <classNode dependClassName="MultiTuple._1" />
-    <classNode dependClassName="MultiTuple._2" />
-    <classNode dependClassName="MultiTuple._3" />
-    <classNode dependClassName="MultiTuple._4" />
-    <classNode dependClassName="MultiTuple._5" />
-    <classNode dependClassName="MultiTuple._6" />
-    <classNode dependClassName="MultiTuple._7" />
-    <classNode dependClassName="MultiTuple._8" />
-    <classNode dependClassName="MultiTuple._9" />
-    <classNode dependClassName="Tuples._0" />
-    <classNode dependClassName="Tuples._1" />
-    <classNode dependClassName="Tuples._2" />
-    <classNode dependClassName="Tuples._3" />
-    <classNode dependClassName="Tuples._4" />
-    <classNode dependClassName="Tuples._5" />
-    <classNode dependClassName="Tuples._6" />
-    <classNode dependClassName="Tuples._7" />
-    <classNode dependClassName="Tuples._8" />
-    <classNode dependClassName="Tuples._9" />
     <classNode dependClassName="java.lang.Deprecated" />
     <classNode dependClassName="java.lang.Object" />
     <classNode dependClassName="java.lang.Override" />
@@ -29,6 +9,7 @@
     <classNode dependClassName="java.lang.SuppressWarnings" />
     <classNode dependClassName="java.lang.System" />
     <classNode dependClassName="java.util.Arrays" />
+    <classNode dependClassName="jetbrains.mps.baseLanguage.tuples.runtime.Tuples" />
     <classNode dependClassName="jetbrains.mps.baseLanguage.tuples.runtime._0" />
     <classNode dependClassName="jetbrains.mps.baseLanguage.tuples.runtime._1" />
     <classNode dependClassName="jetbrains.mps.baseLanguage.tuples.runtime._2" />

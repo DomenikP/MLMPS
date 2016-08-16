@@ -28,6 +28,7 @@ import jetbrains.mps.smodel.tracing.TracedNode;
 import jetbrains.mps.smodel.tracing.TransformationTrace;
 import jetbrains.mps.smodel.tracing.nodes.SNodeProxy;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.mps.openapi.language.SConceptRepository;
 import org.jetbrains.mps.openapi.model.SModel;
 import org.jetbrains.mps.openapi.model.SModelReference;
 import org.jetbrains.mps.openapi.model.SNode;
@@ -44,6 +45,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class DebugInfoBuilder {
   private final DebugInfo myDebugInfo = new DebugInfo();
@@ -258,73 +261,75 @@ public class DebugInfoBuilder {
 
         Iterable<SNode> rootNodes = currentModel.getRootNodes();
         for (SNode currentRoot : currentModel.getRootNodes()) {
-          for (SNode currentNode : SNodeOperations.getNodeDescendants(currentRoot, null, true)) {
-            if (TracingSettings.getInstance().isWriteTracingFile()) {
-              TraceablePositionInfo traceablePosition = getTraceablePosition(transientPositionInfos, currentNode);
+          if(currentRoot.getConcept().isSubConceptOf(SConceptRepository.getInstance().getConcept("jetbrains.mps.lang.traceable.structure.UnitConcept"))) {
+            for (SNode currentNode : SNodeOperations.getNodeDescendants(currentRoot, null, true)) {
+              if (TracingSettings.getInstance().isWriteTracingFile()) {
+                TraceablePositionInfo traceablePosition = getTraceablePosition(transientPositionInfos, currentNode);
 
-              if (traceablePosition != null) {
-                TraceablePositionInfo newTracePos = new TraceablePositionInfo();
-                newTracePos.setPropertyString(traceablePosition.getPropertyString());
-                newTracePos.setNodeId(currentNode.getNodeId().toString());
-                newTracePos.setEndPosition(traceablePosition.getEndPosition());
-                newTracePos.setStartPosition(traceablePosition.getStartPosition());
-                newTracePos.setConceptFqName(currentNode.getConcept().getQualifiedName());
-                newTracePos.setFileName(traceablePosition.getFileName());
-                newTracePos.setStartLine(traceablePosition.getStartLine());
-                newTracePos.setEndLine(traceablePosition.getEndLine());
-                transientPos.put(currentNode, newTracePos);
+                if (traceablePosition != null) {
+                  TraceablePositionInfo newTracePos = new TraceablePositionInfo();
+                  newTracePos.setPropertyString(traceablePosition.getPropertyString());
+                  newTracePos.setNodeId(currentNode.getNodeId().toString());
+                  newTracePos.setEndPosition(traceablePosition.getEndPosition());
+                  newTracePos.setStartPosition(traceablePosition.getStartPosition());
+                  newTracePos.setConceptFqName(currentNode.getConcept().getQualifiedName());
+                  newTracePos.setFileName(traceablePosition.getFileName());
+                  newTracePos.setStartLine(traceablePosition.getStartLine());
+                  newTracePos.setEndLine(traceablePosition.getEndLine());
+                  transientPos.put(currentNode, newTracePos);
+                }
+
               }
+              if (TracingSettings.getInstance().isWriteGeneratorFile()) {
+                SNodeProxy currentProxy = new SNodeProxy(currentNode.getNodeId(), currentNode.getModel().getReference());
+                TracedNode currentTracedNode =
+                    TransformationTrace.getInstance().getTrackedNode(new SNodeProxy(currentNode.getNodeId(), currentNode.getModel().getReference()));
+                if (currentTracedNode == null) {
+                  currentTracedNode = TransformationTrace.getInstance().addTrackedNode(
+                      new SNodeProxy(currentNode.getNodeId(), currentNode.getModel().getReference()));
+                }
+                currentTraces.add(currentTracedNode);
 
-            }
-            if (TracingSettings.getInstance().isWriteGeneratorFile()) {
-              SNodeProxy currentProxy = new SNodeProxy(currentNode.getNodeId(), currentNode.getModel().getReference());
-              TracedNode currentTracedNode =
-                  TransformationTrace.getInstance().getTrackedNode(new SNodeProxy(currentNode.getNodeId(), currentNode.getModel().getReference()));
-              if (currentTracedNode == null) {
-                currentTracedNode = TransformationTrace.getInstance().addTrackedNode(
-                    new SNodeProxy(currentNode.getNodeId(), currentNode.getModel().getReference()));
-              }
-              currentTraces.add(currentTracedNode);
+                if (nextLowerLevelModel != null) {
+                  SNode lowerLevelCopy = nextLowerLevelModel.getNode(currentNode.getNodeId());
 
-              if (nextLowerLevelModel != null) {
-                SNode lowerLevelCopy = nextLowerLevelModel.getNode(currentNode.getNodeId());
+                  if (lowerLevelCopy != null) {
+                    // this node is just a copy
+                    TracedNode lowerLevelCopyTrace = TransformationTrace.getInstance().getTrackedNode(
+                        new SNodeProxy(lowerLevelCopy.getNodeId(), lowerLevelCopy.getModel().getReference()));
 
-                if (lowerLevelCopy != null) {
-                  // this node is just a copy
-                  TracedNode lowerLevelCopyTrace = TransformationTrace.getInstance().getTrackedNode(
-                      new SNodeProxy(lowerLevelCopy.getNodeId(), lowerLevelCopy.getModel().getReference()));
-
-                  if (lowerLevelCopyTrace != null) {
-                    if (lowerLevelCopyTrace.getInputNode() == null) {
-                      lowerLevelCopyTrace.setInputNode(currentTracedNode.getNode());
-                    }
-                    if (lowerLevelCopyTrace.getTrace() != null) {
-                      currentTracedNode.setTrace(new TextTrace(lowerLevelCopyTrace.getTrace().liftedFunctionName, lowerLevelCopyTrace.getTrace().liftedFunctionName, lowerLevelCopyTrace.getTrace().inline));
-                    }
+                    if (lowerLevelCopyTrace != null) {
+                      if (lowerLevelCopyTrace.getInputNode() == null) {
+                        lowerLevelCopyTrace.setInputNode(currentTracedNode.getNode());
+                      }
+                      if (lowerLevelCopyTrace.getTrace() != null) {
+                        currentTracedNode.setTrace(new TextTrace(lowerLevelCopyTrace.getTrace().liftedFunctionName, lowerLevelCopyTrace.getTrace().liftedFunctionName, lowerLevelCopyTrace.getTrace().inline));
+                      }
 //                    if (lowerLevelCopyTrace.getAnnotation() != null) {
 //                      currentTracedNode.setTrace(SNodeOperations.copyNode(lowerLevelCopyTrace.getAnnotation()));
 //                    }
-                    currentTracedNode.addOutputNode(lowerLevelCopyTrace.getNode());
+                      currentTracedNode.addOutputNode(lowerLevelCopyTrace.getNode());
+                    }
                   }
                 }
-              }
 
-              List<TracedNode> nodesWithCurrentAsInput = new ArrayList<TracedNode>();
-              for (TracedNode lowerLevelTrace : lowerLevelTraces) {
-                if (lowerLevelTrace.getInputNode() != null && lowerLevelTrace.getInputNode().equals(currentProxy)) {
-                  nodesWithCurrentAsInput.add(lowerLevelTrace);
+                List<TracedNode> nodesWithCurrentAsInput = new ArrayList<TracedNode>();
+                for (TracedNode lowerLevelTrace : lowerLevelTraces) {
+                  if (lowerLevelTrace.getInputNode() != null && lowerLevelTrace.getInputNode().equals(currentProxy)) {
+                    nodesWithCurrentAsInput.add(lowerLevelTrace);
+                  }
                 }
-              }
 
-              for (TracedNode lowerLevelWithInput : nodesWithCurrentAsInput) {
-                currentTracedNode.addOutputNode(lowerLevelWithInput.getNode());
-                currentTracedNode.addReducedBy(lowerLevelWithInput.getCreatedBy());
-              }
+                for (TracedNode lowerLevelWithInput : nodesWithCurrentAsInput) {
+                  currentTracedNode.addOutputNode(lowerLevelWithInput.getNode());
+                  currentTracedNode.addReducedBy(lowerLevelWithInput.getCreatedBy());
+                }
 
-              for (SNodeProxy outputNode : currentTracedNode.getOutputNodes()) {
-                TracedNode tracedOutputNode = TransformationTrace.getInstance().addTrackedNode(outputNode);
-                if (tracedOutputNode.getInputNode() == null || tracedOutputNode.getInputNode().getNode() == null) {
-                  tracedOutputNode.setInputNode(currentProxy);
+                for (SNodeProxy outputNode : currentTracedNode.getOutputNodes()) {
+                  TracedNode tracedOutputNode = TransformationTrace.getInstance().addTrackedNode(outputNode);
+                  if (tracedOutputNode.getInputNode() == null || tracedOutputNode.getInputNode().getNode() == null) {
+                    tracedOutputNode.setInputNode(currentProxy);
+                  }
                 }
               }
             }
@@ -353,7 +358,7 @@ public class DebugInfoBuilder {
     if (positions == null && scopePositions == null && unitPositions == null) {
       return;
     }
-
+    Executor executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()+2);
     final SRepository originRepo = originalInputModel.getRepository();
     try {
       if (!positions.keySet().isEmpty()) {

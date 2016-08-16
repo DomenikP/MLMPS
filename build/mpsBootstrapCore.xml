@@ -3642,6 +3642,9 @@
         <path location="${mps_home}/core/persistence/source_gen" />
       </src>
       <classpath>
+        <fileset file="${mps_home}/lib/platform-api.jar" />
+        <fileset file="${artifacts.IDEA}/lib/util.jar" />
+        <fileset file="${mps_home}/lib/util.jar" />
         <path refid="path.java.library.annotations-lib" />
         <path refid="path.java.library.jdom-lib" />
         <path refid="path.java.library.log4j-lib" />
@@ -3691,6 +3694,9 @@
         <pathelement path="${build.tmp}/java/out/mps-collections" />
         <pathelement path="${build.tmp}/java/out/mps-tuples" />
         <pathelement path="${build.tmp}/java/out/mps-smodel" />
+        <fileset file="${mps_home}/lib/platform-api.jar" />
+        <fileset file="${artifacts.IDEA}/lib/util.jar" />
+        <fileset file="${mps_home}/lib/util.jar" />
         <path refid="path.java.library.annotations-lib" />
         <path refid="path.java.library.jdom-lib" />
         <path refid="path.java.library.log4j-lib" />
@@ -3771,6 +3777,9 @@
         <path refid="path.java.library.core-libraries" />
         <pathelement path="${build.tmp}/java.modules.cycle.1" />
         <path refid="path.jdk.classpath" />
+        <fileset file="${mps_home}/lib/platform-api.jar" />
+        <fileset file="${artifacts.IDEA}/lib/util.jar" />
+        <fileset file="${mps_home}/lib/util.jar" />
       </classpath>
     </javac2>
     <copy todir="${build.tmp}/java/out/mps-generator">
@@ -3810,6 +3819,9 @@
       <compilerarg value="-Xlint:none" />
       <src path="${mps_home}/core/textgen/source" />
       <classpath>
+        <fileset file="${mps_home}/lib/platform-api.jar" />
+        <fileset file="${artifacts.IDEA}/lib/util.jar" />
+        <fileset file="${mps_home}/lib/util.jar" />
         <pathelement path="${build.tmp}/java/out/mps-debuginfo-api" />
         <pathelement path="${build.tmp}/java/out/mps-openapi" />
         <pathelement path="${build.tmp}/java/out/mps-closures" />

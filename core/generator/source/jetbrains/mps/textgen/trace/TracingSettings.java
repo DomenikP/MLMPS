@@ -20,19 +20,9 @@ import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.options.SearchableConfigurable;
-import jetbrains.mps.generator.DefaultModifiableGenerationSettings;
-import jetbrains.mps.generator.IGenerationSettings.GenTraceSettings;
-import jetbrains.mps.generator.IModifiableGenerationSettings;
 import jetbrains.mps.textgen.trace.TracingSettings.MyState;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.swing.Icon;
-import javax.swing.JComponent;
 
 /**
  * Created by domenik on 14.10.15 KW:42.

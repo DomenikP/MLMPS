@@ -2,7 +2,7 @@
   <configuration default="false" name="MPSLauncher" type="Application" factoryName="Application">
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <option name="MAIN_CLASS_NAME" value="jetbrains.mps.Launcher" />
-    <option name="VM_PARAMETERS" value="-client -ea -Xmx6096m -XX:PermSize=512m -Dmps.internal=true -XX:+HeapDumpOnOutOfMemoryError -Dapple.laf.useScreenMenuBar=true -Dcom.apple.mrj.application.apple.menu.about.name=&quot;JetBrains MPS&quot; -Dapple.awt.graphics.UseQuartz=true -Didea.paths.selector=MPSSRC32" />
+    <option name="VM_PARAMETERS" value="-client -ea -Xmx4096m -XX:PermSize=1024m -Dmps.internal=true -XX:+HeapDumpOnOutOfMemoryError -Dapple.laf.useScreenMenuBar=true -Dcom.apple.mrj.application.apple.menu.about.name=&quot;JetBrains MPS&quot; -Dapple.awt.graphics.UseQuartz=true -Didea.paths.selector=MPSSRC32" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/bin" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -18,7 +18,7 @@
       <option name="LOCAL" value="true" />
     </RunnerSettings>
     <RunnerSettings RunnerId="Profile ">
-      <option name="myExternalizedOptions" value="&#10;additional-options2=onexit\=snapshot&#10;" />
+      <option name="myExternalizedOptions" value="&#10;launch-ui=false&#10;additional-options2=onexit\=snapshot&#10;startup=0&#10;" />
     </RunnerSettings>
     <RunnerSettings RunnerId="Run" />
     <ConfigurationWrapper RunnerId="Debug" />

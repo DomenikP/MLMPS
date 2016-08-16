@@ -992,7 +992,7 @@
     <orderEntry type="library" name="JUnit4" level="project" />
     <orderEntry type="library" name="PicoContainer" level="project" />
     <orderEntry type="library" name="Idea-extensions" level="project" />
-    <orderEntry type="library" name="Idea-plaform" level="project" />
+    <orderEntry type="library" exported="" name="Idea-plaform" level="project" />
     <orderEntry type="module" module-name="mps-editor" />
     <orderEntry type="module" module-name="debugger-api-api" />
     <orderEntry type="module" module-name="mps-icons" />
@@ -1023,7 +1023,7 @@
     <orderEntry type="module" module-name="make-runtime" />
     <orderEntry type="module" module-name="modelchecker" />
     <orderEntry type="module" module-name="mps-workbench" />
-    <orderEntry type="module" module-name="openapi" />
+    <orderEntry type="module" module-name="openapi" exported="" />
     <orderEntry type="module" module-name="smodel" />
     <orderEntry type="module" module-name="Tuples-runtime" />
     <orderEntry type="module" module-name="typesystemIntegration" />
@@ -1034,6 +1034,7 @@
     <orderEntry type="module" module-name="mps-testing" />
     <orderEntry type="module" module-name="migrationAssistant" />
     <orderEntry type="module" module-name="textgen" />
+    <orderEntry type="module" module-name="kernel-resources" />
   </component>
 </module>
 

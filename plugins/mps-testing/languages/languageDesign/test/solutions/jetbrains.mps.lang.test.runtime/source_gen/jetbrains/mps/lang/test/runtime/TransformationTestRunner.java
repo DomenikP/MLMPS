@@ -153,13 +153,17 @@ public class TransformationTestRunner implements TestRunner {
   }
 
   public void runTest(@NotNull final TransformationTest projectTest, final String className, final String methodName, boolean runInCommand) throws Throwable {
+    System.out.println("class: " + className);
+    System.out.println("method: " + methodName);
+    System.out.println("projectTest" + projectTest);
     if (LOG.isInfoEnabled()) {
       LOG.info("Running test " + methodName);
     }
     final Wrappers._T<Class> clazz = new Wrappers._T<Class>();
     final Throwable[] error = new Throwable[1];
-
+    System.out.println("modelDesc: " + projectTest.getModelDescriptor());
     final SModule module = projectTest.getModelDescriptor().getModule();
+    System.out.println("module: " + module);
     if (!(module instanceof ReloadableModule)) {
       throw new IllegalArgumentException("module " + module + " is not reloadable -- cannot run tests in it");
     }
@@ -175,7 +179,6 @@ public class TransformationTestRunner implements TestRunner {
     if (error[0] != null) {
       throw error[0];
     }
-
     final Object obj = clazz.value.newInstance();
     clazz.value.getField("myModel").set(obj, projectTest.getTransientModelDescriptor());
     clazz.value.getField("myProject").set(obj, projectTest.getProject());

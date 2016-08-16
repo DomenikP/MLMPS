@@ -26,6 +26,7 @@ public abstract class AbstractTestWrapper<N extends SNode> implements ITestNodeW
   protected final SNodeReference myNodePointer;
   private String myFqName;
   public AbstractTestWrapper(@NotNull N node) {
+
     myNodePointer = new SNodePointer(node);
   }
   public AbstractTestWrapper(@NotNull SNodeReference nodePointer) {

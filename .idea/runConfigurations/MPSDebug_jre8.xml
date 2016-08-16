@@ -12,6 +12,9 @@
     <option name="PASS_PARENT_ENVS" value="true" />
     <module name="startup" />
     <envs />
+    <RunnerSettings RunnerId="Profile ">
+      <option name="myExternalizedOptions" />
+    </RunnerSettings>
     <RunnerSettings RunnerId="Run" />
     <ConfigurationWrapper RunnerId="Run" />
     <method />

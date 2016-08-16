@@ -1,9 +1,3 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<debug-info>
-  <root>
-    <file name="StructureAspectDescriptor.java">
-      <unit at="14,0,479,0" name="jetbrains.mps.lang.smodel.structure.StructureAspectDescriptor" />
-    </file>
-  </root>
-</debug-info>
+<debug-info />
 

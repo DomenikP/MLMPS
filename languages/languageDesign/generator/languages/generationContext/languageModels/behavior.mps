@@ -90,12 +90,12 @@
       </concept>
       <concept id="1146644602865" name="jetbrains.mps.baseLanguage.structure.PublicVisibility" flags="nn" index="3Tm1VV" />
     </language>
-    <language id="d7706f63-9be2-479c-a3da-ae92af1e64d5" name="jetbrains.mps.lang.generator.generationContext">
-      <concept id="1216860049633" name="jetbrains.mps.lang.generator.generationContext.structure.GenerationContextType" flags="in" index="1iwH7U" />
-    </language>
     <language id="3a13115c-633c-4c5c-bbcc-75c4219e9555" name="jetbrains.mps.lang.quotation">
-      <concept id="1196350785113" name="jetbrains.mps.lang.quotation.structure.Quotation" flags="nn" index="2c44tf">
-        <child id="1196350785114" name="quotedNode" index="2c44tc" />
+      <concept id="5455284157993863837" name="jetbrains.mps.lang.quotation.structure.NodeBuilder" flags="nn" index="2pJPEk">
+        <child id="5455284157993863838" name="quotedNode" index="2pJPEn" />
+      </concept>
+      <concept id="5455284157993863840" name="jetbrains.mps.lang.quotation.structure.NodeBuilderNode" flags="nn" index="2pJPED">
+        <reference id="5455284157993910961" name="concept" index="2pJxaS" />
       </concept>
     </language>
     <language id="7866978e-a0f0-4cc7-81bc-4d213d9375e1" name="jetbrains.mps.lang.smodel">
@@ -440,9 +440,11 @@
       <ref role="13i0hy" to="tpek:27DJnJtIQ9C" resolve="getType" />
       <node concept="3Tm1VV" id="4IGpg_YjLJq" role="1B3o_S" />
       <node concept="3clFbS" id="4IGpg_YjLJr" role="3clF47">
-        <node concept="3cpWs6" id="4IGpg_YjLJs" role="3cqZAp">
-          <node concept="2c44tf" id="4IGpg_YjLJo" role="3cqZAk">
-            <node concept="1iwH7U" id="hHiBXsv" role="2c44tc" />
+        <node concept="3cpWs6" id="6SkmEu0o1KB" role="3cqZAp">
+          <node concept="2pJPEk" id="6SkmEu0o1LM" role="3cqZAk">
+            <node concept="2pJPED" id="6SkmEu0o1M$" role="2pJPEn">
+              <ref role="2pJxaS" to="tpf3:hHiwH3x" resolve="GenerationContextType" />
+            </node>
           </node>
         </node>
       </node>
