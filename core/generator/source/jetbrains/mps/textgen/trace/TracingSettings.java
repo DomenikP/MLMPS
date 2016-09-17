@@ -15,6 +15,7 @@
  */
 package jetbrains.mps.textgen.trace;
 
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.components.PersistentStateComponent;
@@ -43,8 +44,42 @@ public class TracingSettings implements PersistentStateComponent<MyState>, Appli
   private final DefaultModifiableTracingSettings myState = new DefaultModifiableTracingSettings();
 
   public static IModifiableTraceSettings getInstance() {
-    final TracingSettings gs = ApplicationManager.getApplication().getComponent(TracingSettings.class);
-    return gs.getModifiableSettings();
+    Application application = ApplicationManager.getApplication();
+    if (application != null && application.getComponent(TracingSettings.class) != null) {
+      final TracingSettings gs = application.getComponent(TracingSettings.class);
+      return gs.getModifiableSettings();
+    }
+    return new IModifiableTraceSettings() {
+      @Override
+      public boolean isWriteTracingFile() {
+        return false;
+      }
+
+      @Override
+      public void setWriteTracingFile(boolean writeTracingFile) {
+
+      }
+
+      @Override
+      public boolean isWriteGeneratorFile() {
+        return false;
+      }
+
+      @Override
+      public void setWriteGeneratorFile(boolean writeGeneratorFile) {
+
+      }
+
+      @Override
+      public boolean isShowGeneratorTracesInEditor() {
+        return false;
+      }
+
+      @Override
+      public void setShowGeneratorTracesInEditor(boolean showGeneratorTracesInEditor) {
+
+      }
+    };
   }
 
   @Override

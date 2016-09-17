@@ -5,7 +5,7 @@
   <property name="build.layout" location="${build.dir}/artifacts/mpsBootstrapCore" />
   <property name="version" value="3.2.3" />
   <property name="idea_home" location="" />
-  <property name="mps_home" location="${basedir}" />
+  <property name="mps_home" location="." />
   <property name="artifacts.IDEA" location="${idea_home}" />
   
   <path id="path.javac2.classpath">
@@ -62,7 +62,7 @@
   </path>
   
   <path id="path.mps.ant.path">
-    <pathelement location="${build.tmp}/antTasks/ant/lib/ant-mps.jar" />
+    <pathelement location="/Users/domenik/repositories/mps/build/tmp/mpsBootstrapCore/antTasks/ant/lib/ant-mps.jar" />
     <pathelement location="${artifacts.IDEA}/lib/jdom.jar" />
     <pathelement location="${artifacts.IDEA}/lib/log4j.jar" />
   </path>

@@ -17,4 +17,4 @@ fi
 
 mkdir $mps_home/help
 export ANT_OPTS=-Xmx1024m
-ant -f $mps_home/build/build.xml clean base -Dmps_home=$mps_home -Dbuild.number=7777 "-Dversion=3.1 EAP" -Dbuild.vcs.number=HEAD -Dteamcity.buildConfName=local
+ant -f $mps_home/build/build.xml base -Dmps_home=$mps_home -Dbuild.number=140 "-Dversion=3.1 EAP" -Dbuild.vcs.number=HEAD -Dteamcity.buildConfName=local
