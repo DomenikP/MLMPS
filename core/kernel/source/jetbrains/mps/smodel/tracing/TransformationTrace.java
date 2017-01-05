@@ -36,8 +36,7 @@ import java.util.Set;
  * Created by domenik on 09.10.15 KW:41.
  */
 public class TransformationTrace {
-  List<TracedNode> tracedNodes = new ArrayList<TracedNode>();
-
+  Map<SNodeProxy, TracedNode> tracedNodes = new HashMap<SNodeProxy, TracedNode>();
   List<TracedNode> unregistredTracedNodes = new ArrayList<TracedNode>();
   List<SNodeProxy> lazyResolvedModels = new ArrayList<SNodeProxy>();
   List<SModelReference> transientModels = new ArrayList<SModelReference>();
@@ -138,7 +137,7 @@ public class TransformationTrace {
       if(tracedNode.getNode().getNodeId().equals(nodeId) && !reference.equals(tracedNode.getNode().getModelRef())) {
         tracedNode.getNode().setModelReference(reference);
         unregistredTracedNodes.remove(tracedNode);
-        tracedNodes.add(tracedNode);
+        tracedNodes.put(tracedNode.getNode(), tracedNode);
         return;
       }
     }
@@ -147,7 +146,7 @@ public class TransformationTrace {
   public synchronized void updateTrackedNode(SNodeProxy old, SNodeProxy newProxy) {
     TracedNode oldTrackedNode = getTrackedNode(old);
     if(oldTrackedNode != null) {
-      this.tracedNodes.remove(oldTrackedNode);
+      this.tracedNodes.remove(oldTrackedNode.getNode());
       TracedNode newTracedNode = new TracedNode(newProxy);
       for (SNodeProxy output : oldTrackedNode.getOutputNodes()) {
         newTracedNode.addOutputNode(output);
@@ -171,19 +170,20 @@ public class TransformationTrace {
       }
 
 
-      this.tracedNodes.add(tracedNode);
+      this.tracedNodes.put(tracedNode.getNode(), tracedNode);
       return tracedNode;
     }
     return trackedNode;
   }
 
   public TracedNode getTrackedNode(SNodeProxy proxy) {
-    for(int index = 0; index < tracedNodes.size(); index++) {
+    return tracedNodes.get(proxy);
+    /*for(int index = 0; index < tracedNodes.size(); index++) {
       if(tracedNodes.get(index).getNode().equals(proxy)) {
         return tracedNodes.get(index);
       }
     }
-    return null;
+    return null;*/
   }
 
 
